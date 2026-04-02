@@ -1,0 +1,69 @@
+name: TCAS Auto Update
+
+on:
+  # รันอัตโนมัติทุกปี ช่วงธันวาคม (ก่อน TCAS เปิด)
+  schedule:
+    - cron: '0 2 1 12 *'   # 1 ธันวาคม 09:00 น. (UTC+7)
+
+  # หรือกด Run ด้วยมือได้เสมอ
+  workflow_dispatch:
+    inputs:
+      year:
+        description: 'ปีการศึกษา เช่น 2569 (เว้นว่าง = ใช้ปีปัจจุบันอัตโนมัติ)'
+        required: false
+        default: ''
+
+jobs:
+  scrape-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      # ── 1. Checkout code ─────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ── 2. Python setup ──────────────────────────────
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      # ── 3. Scrape mytcas.com ─────────────────────────
+      - name: Scrape TCAS data
+        env:
+          TCAS_YEAR: ${{ github.event.inputs.year || '' }}
+        run: |
+          python mytcas_scraper.py --out mytcas_data.json
+          echo "Scraped $(python -c "import json; d=json.load(open('mytcas_data.json')); print(len(d),'universities,', sum(len(u.get('faculties',[])) for u in d),'faculties')")"
+
+      # ── 4. Import → Supabase ──────────────────────────
+      - name: Import to Supabase
+        env:
+          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          TCAS_YEAR:            ${{ github.event.inputs.year || '' }}
+        run: python import_to_supabase.py
+
+      # ── 5. Upload scraped data as artifact ───────────
+      - name: Upload data artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tcas-data-${{ github.event.inputs.year || 'auto' }}
+          path: mytcas_data.json
+          retention-days: 365
+
+      # ── 6. Deploy Frontend → Vercel ──────────────────
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+          working-directory: ./

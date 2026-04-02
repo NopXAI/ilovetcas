@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1200">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Noto+Sans+Thai:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:1200px;height:630px;overflow:hidden;font-family:'Noto Sans Thai',sans-serif;}
+
+.bg{
+  width:1200px;height:630px;
+  background:#0c0e1a;
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* กริดเส้นพื้นหลัง */
+.grid-lines{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(99,102,241,.08) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(99,102,241,.08) 1px,transparent 1px);
+  background-size:60px 60px;
+}
+
+/* glow blobs */
+.blob1{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.25) 0%,transparent 70%);top:-100px;left:-100px;}
+.blob2{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(236,72,153,.18) 0%,transparent 70%);bottom:-80px;right:100px;}
+.blob3{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(67,97,238,.2) 0%,transparent 70%);top:50px;right:300px;}
+
+.content{position:relative;z-index:1;text-align:center;padding:0 80px;}
+
+/* โลโก้ */
+.logo{
+  font-family:'Chakra Petch',sans-serif;
+  font-size:64px;font-weight:700;
+  background:linear-gradient(90deg,#f472b6,#a78bfa,#67e8f9,#a78bfa,#f472b6);
+  background-size:200%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 20px rgba(167,139,250,.6));
+  margin-bottom:16px;line-height:1.1;
+}
+
+.tagline{
+  font-size:26px;font-weight:800;color:#e8eaff;
+  margin-bottom:12px;letter-spacing:-.3px;
+}
+
+.sub{
+  font-size:18px;color:rgba(255,255,255,.45);
+  font-weight:400;margin-bottom:40px;
+}
+
+/* stats pills */
+.pills{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.pill{
+  padding:10px 20px;border-radius:100px;
+  font-size:15px;font-weight:700;
+  display:flex;align-items:center;gap:8px;
+}
+.pill-blue{background:rgba(67,97,238,.2);border:1px solid rgba(99,102,241,.4);color:#a5b4fc;}
+.pill-purple{background:rgba(139,92,246,.2);border:1px solid rgba(167,139,250,.4);color:#c4b5fd;}
+.pill-pink{background:rgba(236,72,153,.2);border:1px solid rgba(244,114,182,.4);color:#f9a8d4;}
+
+/* bottom bar */
+.bottom{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:18px 48px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-top:1px solid rgba(255,255,255,.06);
+  background:rgba(255,255,255,.02);
+}
+.bottom-logo{
+  font-family:'Chakra Petch',sans-serif;
+  font-size:22px;font-weight:700;
+  background:linear-gradient(90deg,#f472b6,#a78bfa,#67e8f9);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.bottom-url{font-size:16px;color:rgba(255,255,255,.3);font-family:'Chakra Petch',sans-serif;}
+.bottom-tag{
+  font-size:14px;font-weight:700;padding:6px 16px;border-radius:100px;
+  background:rgba(67,97,238,.25);border:1px solid rgba(99,102,241,.4);color:#a5b4fc;
+}
+</style>
+<script>
+// og-image.html เป็น standalone สำหรับ screenshot — ไม่ใช้ design.css
+(function(){
+  const now=new Date(),month=now.getMonth()+1;
+  const beYear=now.getFullYear()+543;
+  const tcasYear=month>=12?beYear+1:beYear;
+  const tcasNum=tcasYear-2500;
+  document.querySelectorAll('[data-tcas-year]').forEach(el=>el.textContent='TCAS'+tcasNum);
+})();
+</script>
+</head>
+<body>
+<div class="bg">
+  <div class="grid-lines"></div>
+  <div class="blob1"></div>
+  <div class="blob2"></div>
+  <div class="blob3"></div>
+
+  <div class="content">
+    <div class="logo">I♥TCAS</div>
+    <div class="tagline">หาคณะที่ใช่ เทียบข้อมูลให้ครบ ก่อนตัดสินใจ</div>
+    <div class="sub">จำนวนรับ · คะแนนขั้นต่ำ · ค่าเทอม · 81 มหาวิทยาลัย 847 คณะ TCAS69</div>
+    <div class="pills">
+      <div class="pill pill-blue">🏫 81 มหาวิทยาลัย</div>
+      <div class="pill pill-purple">🎓 847 คณะ</div>
+      <div class="pill pill-pink">📅 TCAS69</div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div class="bottom-logo">I♥TCAS</div>
+    <div class="bottom-url">ilovetcas.vercel.app</div>
+    <div class="bottom-tag">ฟรี · ไม่มีโฆษณา</div>
+  </div>
+</div>
+</body>
+</html>

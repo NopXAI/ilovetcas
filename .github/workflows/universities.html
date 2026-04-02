@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="รายชื่อมหาวิทยาลัยทุกแห่งที่เข้าร่วม TCAS กรองตามประเภทและภาคได้เลย">
+<meta name="color-scheme" content="dark">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>มหาวิทยาลัย — I♥TCAS</title>
+  <!-- OG / Social -->
+  <meta property="og:type"        content="website">
+  <meta property="og:site_name"   content="iLoveTCAS">
+  <meta property="og:title"       content="มหาวิทยาลัย — iLoveTCAS">
+  <meta property="og:description" content="รายชื่อมหาวิทยาลัยทั้งหมดที่เข้าร่วม TCAS กรองตามประเภทและภาคได้เลย">
+  <meta property="og:image"       content="https://ilovetcas.vercel.app/og-image.png">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url"         content="https://ilovetcas.vercel.app/universities">
+  <meta property="og:locale"      content="th_TH">
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="มหาวิทยาลัย — iLoveTCAS">
+  <meta name="twitter:description" content="รายชื่อมหาวิทยาลัยทั้งหมดที่เข้าร่วม TCAS กรองตามประเภทและภาคได้เลย">
+  <meta name="twitter:image"       content="https://ilovetcas.vercel.app/og-image.png">
+  <!-- Theme -->
+  <meta name="theme-color"         content="#4361ee">
+  
+
+
+<script src="site.js"></script>
+</head>
+<body>
+
+<header>
+  <a href="/" class="logo">I♥TCAS</a>
+  <nav>
+    <a href="/search">ค้นหาคณะ</a>
+    <a href="/universities" class="active">มหาวิทยาลัย</a>
+    <a href="/compare">เปรียบเทียบ</a>
+    <a href="/timeline">ปฏิทิน</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag"><span class="hero-dot"></span>I♥TCAS · มหาวิทยาลัย</div>
+    <h1>เลือกมหาลัย<br><span>ที่ชอบได้เลย</span></h1>
+    <div class="hero-sub">ทุกประเภท ทุกภาค 81 แห่ง</div>
+    <div class="search-wrap">
+      <div class="s-ico"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+      <input id="searchInput" type="text" placeholder="พิมพ์ชื่อมหาวิทยาลัย หรือจังหวัด..." autocomplete="off">
+    </div>
+    <div class="stats-row">
+      <div class="si"><div class="si-n" id="sTotal">—</div><div class="si-l">มหาวิทยาลัย</div></div>
+      <div class="sdiv"></div>
+      <div class="si"><div class="si-n" id="sState">—</div><div class="si-l">รัฐบาล</div></div>
+      <div class="sdiv"></div>
+      <div class="si"><div class="si-n" id="sPriv">—</div><div class="si-l">เอกชน</div></div>
+      <div class="sdiv"></div>
+      <div class="si"><div class="si-n" id="sRaj">—</div><div class="si-l">ราชภัฏ</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="fbar">
+  <div class="fbar-inner">
+    <button class="ftab active" data-type="">ทุกประเภท</button>
+    <button class="ftab" data-type="รัฐบาล">รัฐบาล</button>
+    <button class="ftab" data-type="เอกชน">เอกชน</button>
+    <button class="ftab" data-type="ราชภัฏ">ราชภัฏ</button>
+    <button class="ftab" data-type="ราชมงคล">ราชมงคล</button>
+    <div class="fsep"></div>
+    <select class="fsel" id="regionFilter">
+      <option value="">ทุกภาค</option>
+      <option value="กลาง">ภาคกลาง</option>
+      <option value="เหนือ">ภาคเหนือ</option>
+      <option value="อีสาน">ภาคอีสาน</option>
+      <option value="ใต้">ภาคใต้</option>
+      <option value="ตะวันออก">ภาคตะวันออก</option>
+    </select>
+    <div class="fsep"></div>
+    <button class="vbtn active" id="vGrid" onclick="setView('grid')" title="Grid">⊞</button>
+    <button class="vbtn" id="vList" onclick="setView('list')" title="List">☰</button>
+  </div>
+</div>
+
+<main class="main">
+  <div class="rmeta">
+    แสดง <span class="rc" id="resCount">—</span> มหาวิทยาลัย
+  </div>
+  <div id="mainContent"></div>
+  <div class="empty" id="emptyState" style="display:none">
+    <div class="empty-ico">🔍</div>
+    <div>ไม่เจอมหาลัยที่หา — ลองเปลี่ยนคำค้นดูครับ</div>
+  </div>
+</main>
+
+<script>
+const SB_URL = SiteConfig.SB_URL;
+const SB_KEY = SiteConfig.SB_KEY;
+
+function getEmoji(n){
+  const m={'จุฬา':'🏛️','ธรรมศาสตร์':'🔴','มหิดล':'💙','เกษตร':'🌾','พระจอมเกล้าธนบุรี':'🔧','ลาดกระบัง':'⚡','พระนครเหนือ':'🏗️','ศรีนครินทรวิโรฒ':'🎓','ศิลปากร':'🎨','บูรพา':'🌊','เชียงใหม่':'🌸','นเรศวร':'⚔️','แม่ฟ้าหลวง':'🍃','แม่โจ้':'🌱','พะเยา':'🏔️','ขอนแก่น':'🌻','มหาสารคาม':'🐘','อุบลราชธานี':'🌿','นครพนม':'🦚','สงขลา':'🏝️','วลัยลักษณ์':'🌴','ทักษิณ':'🎏','ราชภัฏ':'📚','ราชมงคล':'🔩','รังสิต':'🌟','กรุงเทพ':'🏙️'};
+  for(const[k,v]of Object.entries(m))if(n.includes(k))return v;
+  return'🎓';
+}
+
+function getLocation(name){
+  const loc={
+    'จุฬา':'กรุงเทพมหานคร','ธรรมศาสตร์':'กรุงเทพมหานคร','มหิดล':'นครปฐม',
+    'เกษตรศาสตร์':'กรุงเทพมหานคร','พระจอมเกล้าธนบุรี':'กรุงเทพมหานคร',
+    'ลาดกระบัง':'กรุงเทพมหานคร','พระนครเหนือ':'กรุงเทพมหานคร',
+    'ศรีนครินทรวิโรฒ':'กรุงเทพมหานคร','ศิลปากร':'กรุงเทพมหานคร',
+    'บูรพา':'ชลบุรี','เชียงใหม่':'เชียงใหม่','นเรศวร':'พิษณุโลก',
+    'แม่ฟ้าหลวง':'เชียงราย','แม่โจ้':'เชียงใหม่','พะเยา':'พะเยา',
+    'ขอนแก่น':'ขอนแก่น','มหาสารคาม':'มหาสารคาม','อุบลราชธานี':'อุบลราชธานี',
+    'นครพนม':'นครพนม','สงขลานครินทร์':'สงขลา','วลัยลักษณ์':'นครศรีธรรมราช',
+    'ทักษิณ':'สงขลา','รังสิต':'ปทุมธานี','กรุงเทพ':'กรุงเทพมหานคร',
+    'ธุรกิจบัณฑิตย์':'กรุงเทพมหานคร','อัสสัมชัญ':'กรุงเทพมหานคร',
+    'หอการค้าไทย':'กรุงเทพมหานคร','ปัญญาภิวัฒน์':'กรุงเทพมหานคร',
+    'สวนสุนันทา':'กรุงเทพมหานคร','บ้านสมเด็จ':'กรุงเทพมหานคร',
+    'พระนครศรีอยุธยา':'พระนครศรีอยุธยา','ราชภัฏเชียงใหม่':'เชียงใหม่',
+    'ราชภัฏเชียงราย':'เชียงราย','ราชภัฏลำปาง':'ลำปาง','ราชภัฏอุตรดิตถ์':'อุตรดิตถ์',
+    'ราชภัฏกำแพงเพชร':'กำแพงเพชร','ราชภัฏนครสวรรค์':'นครสวรรค์','ราชภัฏพิบูลสงคราม':'พิษณุโลก',
+    'ราชภัฏเพชรบูรณ์':'เพชรบูรณ์','ราชภัฏสกลนคร':'สกลนคร','ราชภัฏนครราชสีมา':'นครราชสีมา',
+    'ราชภัฏบุรีรัมย์':'บุรีรัมย์','ราชภัฏสุรินทร์':'สุรินทร์','ราชภัฏมหาสารคาม':'มหาสารคาม',
+    'ราชภัฏชัยภูมิ':'ชัยภูมิ','ราชภัฏอุดรธานี':'อุดรธานี','ราชภัฏเลย':'เลย',
+    'ราชภัฏร้อยเอ็ด':'ร้อยเอ็ด','ราชภัฏยะลา':'ยะลา','ราชภัฏสุราษฎร์ธานี':'สุราษฎร์ธานี',
+    'ราชภัฏนครศรีธรรมราช':'นครศรีธรรมราช','ราชภัฏสงขลา':'สงขลา','ราชภัฏภูเก็ต':'ภูเก็ต',
+    'ราชภัฏหมู่บ้านจอมบึง':'ราชบุรี','ราชภัฏเพชรบุรี':'เพชรบุรี','ราชภัฏกาญจนบุรี':'กาญจนบุรี',
+    'ราชภัฏนครปฐม':'นครปฐม','ราชภัฏจันทรเกษม':'กรุงเทพมหานคร',
+    'ราชมงคลพระนคร':'กรุงเทพมหานคร','ราชมงคลกรุงเทพ':'กรุงเทพมหานคร',
+    'ราชมงคลตะวันออก':'ชลบุรี','ราชมงคลธัญบุรี':'ปทุมธานี','ราชมงคลพระนครเหนือ':'กรุงเทพมหานคร',
+    'ราชมงคลรัตนโกสินทร์':'นครปฐม','ราชมงคลล้านนา':'เชียงใหม่',
+    'ราชมงคลศรีวิชัย':'สงขลา','ราชมงคลสุวรรณภูมิ':'พระนครศรีอยุธยา','ราชมงคลอีสาน':'นครราชสีมา',
+    'สุรนารี':'นครราชสีมา','เทคโนโลยีพระจอมเกล้า':'กรุงเทพมหานคร',
+    'ปทุมธานี':'ปทุมธานี','กรุงเทพธนบุรี':'กรุงเทพมหานคร',
+    'นานาชาติแสตมฟอร์ด':'กรุงเทพมหานคร','เวสเทิร์น':'กาญจนบุรี',
+    'การจัดการและเทคโนโลยีอินเตอร์':'กรุงเทพมหานคร',
+    'นอร์ท-เชียงใหม่':'เชียงใหม่','ฟาร์อีสเทอร์น':'เชียงใหม่',
+    'พายัพ':'เชียงใหม่','นอร์ทกรุงเทพ':'กรุงเทพมหานคร',
+    'ศรีปทุม':'กรุงเทพมหานคร','เอเชียอาคเนย์':'นครราชสีมา',
+    'หัวเฉียว':'สมุทรปราการ','เซนต์จอห์น':'กรุงเทพมหานคร',
+    'กรุงเทพสุวรรณภูมิ':'สมุทรปราการ',
+  };
+  for(const[k,v]of Object.entries(loc))if(name.includes(k))return v;
+  return '';
+}
+
+function getRegion(name, locationStr){
+  const regionByLoc={
+    'กรุงเทพ':'กลาง','นนทบุรี':'กลาง','ปทุมธานี':'กลาง','สมุทรปราการ':'กลาง',
+    'นครปฐม':'กลาง','ราชบุรี':'กลาง','กาญจนบุรี':'กลาง','สุพรรณบุรี':'กลาง',
+    'อยุธยา':'กลาง','สระบุรี':'กลาง','ลพบุรี':'กลาง','สิงห์บุรี':'กลาง',
+    'อ่างทอง':'กลาง','ชัยนาท':'กลาง','นครสวรรค์':'กลาง','อุทัยธานี':'กลาง',
+    'กำแพงเพชร':'กลาง','ตาก':'กลาง','เพชรบุรี':'กลาง','ประจวบ':'กลาง',
+    'เชียงใหม่':'เหนือ','เชียงราย':'เหนือ','ลำปาง':'เหนือ','ลำพูน':'เหนือ',
+    'แม่ฮ่องสอน':'เหนือ','พะเยา':'เหนือ','น่าน':'เหนือ','แพร่':'เหนือ',
+    'อุตรดิตถ์':'เหนือ','สุโขทัย':'เหนือ','พิษณุโลก':'เหนือ','พิจิตร':'เหนือ',
+    'เพชรบูรณ์':'เหนือ',
+    'ขอนแก่น':'อีสาน','อุดรธานี':'อีสาน','หนองคาย':'อีสาน','หนองบัวลำภู':'อีสาน',
+    'เลย':'อีสาน','นครราชสีมา':'อีสาน','บุรีรัมย์':'อีสาน','สุรินทร์':'อีสาน',
+    'ชัยภูมิ':'อีสาน','มหาสารคาม':'อีสาน','ร้อยเอ็ด':'อีสาน','กาฬสินธุ์':'อีสาน',
+    'สกลนคร':'อีสาน','นครพนม':'อีสาน','มุกดาหาร':'อีสาน','อำนาจเจริญ':'อีสาน',
+    'ยโสธร':'อีสาน','ศรีสะเกษ':'อีสาน','อุบลราชธานี':'อีสาน','บึงกาฬ':'อีสาน',
+    'สุราษฎร์':'ใต้','นครศรีธรรมราช':'ใต้','กระบี่':'ใต้','ภูเก็ต':'ใต้',
+    'พังงา':'ใต้','ระนอง':'ใต้','ชุมพร':'ใต้','สงขลา':'ใต้','สตูล':'ใต้',
+    'ตรัง':'ใต้','พัทลุง':'ใต้','ปัตตานี':'ใต้','ยะลา':'ใต้','นราธิวาส':'ใต้',
+    'ชลบุรี':'ตะวันออก','ระยอง':'ตะวันออก','จันทบุรี':'ตะวันออก',
+    'ตราด':'ตะวันออก','ฉะเชิงเทรา':'ตะวันออก','ปราจีนบุรี':'ตะวันออก',
+    'สระแก้ว':'ตะวันออก','นครนายก':'ตะวันออก',
+  };
+  const loc=locationStr||getLocation(name);
+  for(const[k,v]of Object.entries(regionByLoc))if(loc.includes(k))return v;
+  return '';
+}
+
+let UNIS=[];
+const ST={q:'',type:'',region:'',view:'grid'};
+
+function normalizeRegion(r){
+  if(!r) return '';
+  r=r.replace('ภาค','').trim();
+  const map={'central':'กลาง','north':'เหนือ','northeast':'อีสาน','south':'ใต้','east':'ตะวันออก','isan':'อีสาน','isaan':'อีสาน'};
+  const lower=r.toLowerCase();
+  if(map[lower]) return map[lower];
+  return r;
+}
+
+async function loadData(){
+  document.getElementById('mainContent').innerHTML=`
+    <div class="skel-hdr skel"></div>
+    <div class="skel-hdr skel" style="animation-delay:.1s"></div>
+    <div class="skel-hdr skel" style="animation-delay:.2s"></div>`;
+
+  const aggregateRows = (rows) => {
+    const um={};
+    const facSeatMap={};
+    for(const row of rows){
+      if(!um[row.uni_id]) um[row.uni_id]={
+        id:row.uni_id,
+        name_th:row.uni_name_th,
+        name_en:row.uni_name_en||'',
+        uni_type:row.uni_type||'',
+        location:row.location||getLocation(row.uni_name_th||''),
+        region:normalizeRegion(row.region)||getRegion(row.uni_name_th||'',row.location||''),
+        emoji:SiteConfig.getEmoji(row.uni_name_th),
+        faculties:0,
+        seats:0,
+      };
+      if(!facSeatMap[row.uni_id]) facSeatMap[row.uni_id]={};
+      if(!facSeatMap[row.uni_id][row.faculty_id]) facSeatMap[row.uni_id][row.faculty_id]=0;
+      facSeatMap[row.uni_id][row.faculty_id]+=(row.seats||0);
+    }
+    for(const [uid, facMap] of Object.entries(facSeatMap)){
+      if(!um[uid]) continue;
+      um[uid].faculties=Object.keys(facMap).length;
+      um[uid].seats=Object.values(facMap).reduce((a,v)=>a+v,0);
+    }
+    return Object.values(um).sort((a,b)=>a.name_th.localeCompare(b.name_th,'th'));
+  };
+
+  try{
+    const rows = await SiteConfig.fetchAdmissions({
+      year: SiteConfig.tcasYear(),
+      select: 'uni_id,uni_name_th,uni_name_en,uni_type,location,region,faculty_id,seats',
+      limit: 9999,
+    });
+    UNIS = aggregateRows(rows);
+  }catch(e){
+    console.warn('Supabase error:', e.message);
+    try{
+      const local = await SiteConfig.fetchLocalData();
+      UNIS = local.map((u) => ({
+        id:u.id,
+        name_th:u.name_th,
+        name_en:u.name_en||'',
+        uni_type:u.uni_type||'',
+        location:u.location||getLocation(u.name_th||''),
+        region:normalizeRegion(u.region)||getRegion(u.name_th||'',u.location||''),
+        emoji:u.emoji||SiteConfig.getEmoji(u.name_th),
+        faculties:(u.faculties||[]).length,
+        seats:(u.faculties||[]).reduce((sum,f)=>sum+((f.r1||0)+(f.r2||0)+(f.r3||0)+(f.r4||0)+(f.r5||0)),0),
+      })).sort((a,b)=>a.name_th.localeCompare(b.name_th,'th'));
+    }catch(localErr){
+      console.warn('Local JSON error:', localErr.message);
+      document.getElementById('mainContent').innerHTML='<div class="empty"><div class="empty-ico">⚠️</div><div class="empty-msg">โหลดข้อมูลไม่ได้ กรุณา refresh</div></div>';
+      return;
+    }
+  }
+  boot();
+}
+
+// normalize uni_type จาก DB ให้ตรงกับ key ที่ใช้ใน UI
+function normalizeType(t){
+  if(!t) return '';
+  if(t.includes('ราชภัฏ')) return 'ราชภัฏ';
+  if(t.includes('ราชมงคล')) return 'ราชมงคล';
+  if(t.includes('เอกชน')||t==='Private') return 'เอกชน';
+  if(t.includes('รัฐบาล')||t==='Public'||t==='Government') return 'รัฐบาล';
+  return t;
+}
+
+
+function boot(){
+  // normalize uni_type ทุกตัวหลังโหลดข้อมูล
+  UNIS.forEach(u=>{ u.uni_type=normalizeType(u.uni_type); });
+  document.getElementById('sTotal').textContent=UNIS.length;
+  document.getElementById('sState').textContent=UNIS.filter(u=>u.uni_type==='รัฐบาล').length;
+  document.getElementById('sPriv').textContent=UNIS.filter(u=>u.uni_type==='เอกชน').length;
+  document.getElementById('sRaj').textContent=UNIS.filter(u=>u.uni_type==='ราชภัฏ'||u.uni_type==='ราชมงคล').length;
+  render();
+}
+
+function filtered(){
+  const q=ST.q.toLowerCase();
+  return UNIS.filter(u=>{
+    if(q&&!u.name_th.includes(q)&&!(u.name_en||'').toLowerCase().includes(q)&&!(u.location||'').includes(q))return false;
+    if(ST.type&&u.uni_type!==ST.type)return false;
+    if(ST.region&&u.region!==ST.region)return false;
+    return true;
+  });
+}
+
+function render(){
+  const data=filtered();
+  document.getElementById('resCount').textContent=data.length;
+  // sync hero stats กับ filtered result
+  // sTotal = total เสมอ, resCount = filtered
+  document.getElementById('sTotal').textContent=UNIS.length;
+  document.getElementById('emptyState').style.display=data.length?'none':'block';
+  const el=document.getElementById('mainContent');
+  if(!data.length){el.innerHTML='';return;}
+  const TYPES=['รัฐบาล','เอกชน','ราชภัฏ','ราชมงคล'];
+  if(!ST.type){
+    el.innerHTML=TYPES.map(t=>{
+      const g=data.filter(u=>u.uni_type===t);
+      if(!g.length)return'';
+      return`<div class="sec-hdr"><span class="sec-title">${t}</span><span class="sec-count">${g.length}</span><div class="sec-line"></div></div>
+      ${ST.view==='grid'?`<div class="uni-grid">${g.map((u,i)=>gridCard(u,i)).join('')}</div>`:`<div class="uni-list">${g.map((u,i)=>listRow(u,i)).join('')}</div>`}`;
+    }).join('');
+  } else {
+    el.innerHTML=ST.view==='grid'?`<div class="uni-grid">${data.map((u,i)=>gridCard(u,i)).join('')}</div>`:`<div class="uni-list">${data.map((u,i)=>listRow(u,i)).join('')}</div>`;
+  }
+}
+
+function gridCard(u,i){
+  return`<a class="uni-card" href="/university?id=${u.id}" style="animation-delay:${i*.03}s">
+    <div class="card-top">
+      <div class="card-logo">${u.emoji||'🎓'}</div>
+      <div style="flex:1;min-width:0"><div class="card-name">${u.name_th}</div><div class="card-en">${u.name_en||''}</div></div>
+      <span class="card-badge tb-${u.uni_type}">${u.uni_type}</span>
+    </div>
+    <div class="card-stats">
+      <div class="cs"><div class="cs-n">${u.faculties}</div><div class="cs-l">คณะ</div></div>
+      <div class="cs"><div class="cs-n">${(u.seats||0).toLocaleString()}</div><div class="cs-l">ที่นั่ง</div></div>
+      <div class="cs"><div class="cs-n">${u.region||'—'}</div><div class="cs-l">ภาค</div></div>
+    </div>
+    <div class="card-loc"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${u.location||''}</div>
+  </a>`;
+}
+
+function listRow(u,i){
+  return`<a class="uni-row" href="/university?id=${u.id}" style="animation-delay:${i*.02}s">
+    <div class="row-logo">${u.emoji||'🎓'}</div>
+    <div style="flex:1;min-width:0"><div class="row-name">${u.name_th}</div><div class="row-en">${u.name_en||''}</div></div>
+    <div><div class="row-num">${u.faculties}</div><div class="row-label">คณะ</div></div>
+    <div><div class="row-num">${(u.seats||0).toLocaleString()}</div><div class="row-label">ที่นั่ง</div></div>
+    <span class="card-badge tb-${u.uni_type}">${u.uni_type}</span>
+    <div class="row-loc">${u.location||''}</div>
+  </a>`;
+}
+
+function setView(v){
+  ST.view=v;
+  document.getElementById('vGrid').classList.toggle('active',v==='grid');
+  document.getElementById('vList').classList.toggle('active',v==='list');
+  render();
+}
+
+let dbt;
+document.getElementById('searchInput').addEventListener('input',e=>{clearTimeout(dbt);dbt=setTimeout(()=>{ST.q=e.target.value.trim();render();},300);});
+document.querySelectorAll('.ftab[data-type]').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.ftab[data-type]').forEach(x=>x.classList.remove('active'));b.classList.add('active');ST.type=b.dataset.type;render();});});
+document.getElementById('regionFilter').addEventListener('change',e=>{ST.region=e.target.value;render();});
+
+
+
+loadData();
+
+// 🥚 Easter egg — Noppadon Pumpong
+(function(){
+  // Console
+  console.log('%c I♥TCAS ','background:#1a56a0;color:#fff;font-size:13px;font-weight:800;padding:4px 12px;border-radius:4px;font-family:monospace');
+  console.log('%c Noppadon Pumpong','color:#4a9eff;font-size:12px;font-family:monospace');
+  console.log('%c 💡 Konami: ↑↑↓↓←→←→BA','color:#6e7681;font-size:11px;font-family:monospace');
+
+  // Konami Code
+  const CODE=[38,38,40,40,37,39,37,39,66,65];let idx=0;
+  document.addEventListener('keydown',e=>{
+    idx=e.keyCode===CODE[idx]?idx+1:e.keyCode===CODE[0]?1:0;
+    if(idx===CODE.length){idx=0;
+      const el=document.createElement('div');
+      el.innerHTML=`<div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:32px 40px;z-index:9999;font-family:'IBM Plex Mono',monospace;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.3)"><div style="font-size:28px;margin-bottom:12px">👋</div><div style="font-size:18px;font-weight:700;color:var(--tx)">Noppadon Pumpong</div><button onclick="this.closest('div').parentElement.remove()" style="margin-top:20px;padding:6px 18px;background:var(--ac);color:#fff;border:none;border-radius:7px;font-family:'IBM Plex Mono',monospace;font-size:12px;cursor:pointer">OK</button></div>`;
+      document.body.appendChild(el);setTimeout(()=>el.remove(),5000);
+    }
+  });
+
+  // Logo 5 คลิก
+  let n=0,t;
+  document.querySelector('.logo')?.addEventListener('click',e=>{
+    e.preventDefault();n++;clearTimeout(t);t=setTimeout(()=>n=0,1200);
+    if(n===5){n=0;const d=document.createElement('div');
+      d.style.cssText='position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--ac);color:#fff;padding:10px 22px;border-radius:100px;font-family:"IBM Plex Mono",monospace;font-size:13px;z-index:9999;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(26,86,160,.4)';
+      d.textContent='👋 Noppadon Pumpong';document.body.appendChild(d);setTimeout(()=>d.remove(),2500);}
+  });
+
+  // Animation styles
+  const s=document.createElement('style');
+  s.textContent='@keyframes konamiIn{from{opacity:0;transform:translate(-50%,-50%) scale(.9)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}';
+  document.head.appendChild(s);
+})();
+
+</script>
+
+<!-- BACK TO TOP -->
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="กลับด้านบน">↑</button>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <span class="footer-logo">I♥TCAS</span>
+      · ข้อมูลจาก <a href="https://www.mytcas.com" target="_blank" class="footer-link">mytcas.com</a>
+    </div>
+    <div class="footer-credit">NopX_AI</div>
+  </div>
+</footer>
+
+<script>
+// Back to top visibility
+window.addEventListener('scroll',()=>{
+  const b=document.getElementById('btt');
+  if(b){b.style.opacity=window.scrollY>400?'1':'0';b.style.pointerEvents=window.scrollY>400?'auto':'none';}
+});
+</script>
+
+</body>
+</html>

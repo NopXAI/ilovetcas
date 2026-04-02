@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="ดูคณะ จำนวนรับ คะแนนขั้นต่ำ ค่าเทอม และเกณฑ์คัดเลือกของแต่ละมหาวิทยาลัย">
+<meta name="color-scheme" content="dark">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>รายละเอียดมหาวิทยาลัย — I♥TCAS</title>
+  <!-- OG / Social -->
+  <meta property="og:type"        content="website">
+  <meta property="og:site_name"   content="iLoveTCAS">
+  <meta property="og:title"       content="รายละเอียดมหาวิทยาลัย — iLoveTCAS">
+  <meta property="og:description" content="ดูคณะ ที่นั่ง คะแนนขั้นต่ำ และค่าเทอมของแต่ละมหาวิทยาลัยได้ที่นี่">
+  <meta property="og:image"       content="https://ilovetcas.vercel.app/og-image.png">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url"         content="https://ilovetcas.vercel.app/university">
+  <meta property="og:locale"      content="th_TH">
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="รายละเอียดมหาวิทยาลัย — iLoveTCAS">
+  <meta name="twitter:description" content="ดูคณะ ที่นั่ง คะแนนขั้นต่ำ และค่าเทอมของแต่ละมหาวิทยาลัยได้ที่นี่">
+  <meta name="twitter:image"       content="https://ilovetcas.vercel.app/og-image.png">
+  <!-- Theme -->
+  <meta name="theme-color"         content="#4361ee">
+  
+
+
+<script src="site.js"></script>
+</head>
+<body>
+
+<header>
+  <a href="/" class="logo">I♥TCAS</a>
+  <nav>
+    <a href="/search">ค้นหาคณะ</a>
+    <a href="/universities" class="active">มหาวิทยาลัย</a>
+    <a href="/compare">เปรียบเทียบ</a>
+    <a href="/timeline">ปฏิทิน</a>
+  </nav>
+</header>
+
+<!-- HERO จะถูก inject โดย JS -->
+<div id="heroEl"></div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" data-tab="overview">ภาพรวม</button>
+    <button class="tab-btn" data-tab="faculties">คณะทั้งหมด</button>
+    <button class="tab-btn" data-tab="history">คะแนนย้อนหลัง</button>
+  </div>
+</div>
+
+<main class="main">
+  <div class="tab-panel active" id="tp_overview">
+    <div id="overviewEl"></div>
+  </div>
+  <div class="tab-panel" id="tp_faculties">
+    <div id="facultiesEl"></div>
+  </div>
+  <div class="tab-panel" id="tp_history">
+    <div id="historyEl"></div>
+  </div>
+</main>
+
+<!-- FAC DETAIL MODAL -->
+<div class="overlay" id="facModal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="m-hdr">
+      <div><div class="m-title" id="md_title">—</div><div class="m-sub" id="md_sub">—</div></div>
+      <button class="m-x" onclick="closeModal()">✕</button>
+    </div>
+    <div class="m-body">
+      <div class="m-igrid">
+        <div class="m-ic"><div class="m-ic-l">ที่นั่งรวม</div><div class="m-ic-v" id="md_seats">—</div></div>
+        <div class="m-ic"><div class="m-ic-l">คะแนนขั้นต่ำ</div><div class="m-ic-v" id="md_score">—</div></div>
+        <div class="m-ic"><div class="m-ic-l">ค่าเทอม / ปี</div><div class="m-ic-v" id="md_tuition">—</div></div>
+        <div class="m-ic"><div class="m-ic-l">กลุ่มสาขา</div><div class="m-ic-v" id="md_cat" style="font-size:14px;font-family:var(--sans)">—</div></div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">จำนวนรับแต่ละรอบ</div>
+      <div class="m-rounds" id="md_rounds"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">เกณฑ์การคัดเลือก</div>
+      <div class="m-criteria" id="md_criteria">—</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SB_URL = 'https://pbyworyzrgcllljeibtj.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBieXdvcnl6cmdjbGxsamVpYnRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5MTEyODksImV4cCI6MjA4OTQ4NzI4OX0.dQnTtBeK08R27whhkZQAGR7iaOX3ZswRrd8jr5ZVXqY';
+
+const CAT={วิศวกรรม:['วิศวกรรม','เทคโนโลยี','คอมพิวเตอร์','สารสนเทศ'],แพทย์:['แพทย','เภสัช','พยาบาล','ทันตแพทย','สาธารณสุข'],วิทยาศาสตร์:['วิทยาศาสตร์','เกษตร','วนศาสตร์'],บริหาร:['บริหาร','เศรษฐศาสตร์','การบัญชี'],ครุศาสตร์:['ครุศาสตร์','ศึกษาศาสตร์'],ศิลปะ:['ศิลป','สถาปัตย','นิเทศ'],สังคม:['นิติ','รัฐศาสตร์','อักษร','มนุษย','สังคม']};
+function gcat(n){for(const[c,ks]of Object.entries(CAT))if(ks.some(k=>n.includes(k)))return c;return'อื่นๆ';}
+function fseats(f){return[f.r1,f.r2,f.r3,f.r4,f.r5].reduce((a,v)=>a+(v||0),0);}
+
+function getEmoji(n){
+  const m={'จุฬา':'🏛️','ธรรมศาสตร์':'🔴','มหิดล':'💙','เกษตร':'🌾','พระจอมเกล้าธนบุรี':'🔧','ลาดกระบัง':'⚡','พระนครเหนือ':'🏗️','ศรีนครินทรวิโรฒ':'🎓','ศิลปากร':'🎨','บูรพา':'🌊','เชียงใหม่':'🌸','นเรศวร':'⚔️','แม่ฟ้าหลวง':'🍃','แม่โจ้':'🌱','พะเยา':'🏔️','ขอนแก่น':'🌻','มหาสารคาม':'🐘','อุบลราชธานี':'🌿','นครพนม':'🦚','สงขลา':'🏝️','วลัยลักษณ์':'🌴','ทักษิณ':'🎏','ราชภัฏ':'📚','ราชมงคล':'🔩','รังสิต':'🌟','กรุงเทพ':'🏙️'};
+  for(const[k,v]of Object.entries(m))if(n.includes(k))return v;
+  return'🎓';
+}
+
+
+function normalizeType(t){
+  if(!t) return '';
+  if(t.includes('ราชภัฏ')) return 'ราชภัฏ';
+  if(t.includes('ราชมงคล')) return 'ราชมงคล';
+  if(t.includes('เอกชน')||t==='Private') return 'เอกชน';
+  if(t.includes('รัฐบาล')||t==='Public'||t==='Government') return 'รัฐบาล';
+  return t;
+}
+// ── Module-level state (ใช้ใน boot + renderFacTable + openFac) ──
+let _uni={}, _facs=[], _activeCat='';
+
+const RNAMES=['Portfolio','Quota','Admission','Direct','รับตรง'];
+
+function getLocation(name){
+  const loc={
+    'จุฬา':'กรุงเทพมหานคร','ธรรมศาสตร์':'กรุงเทพมหานคร','มหิดล':'นครปฐม',
+    'เกษตรศาสตร์':'กรุงเทพมหานคร','พระจอมเกล้าธนบุรี':'กรุงเทพมหานคร',
+    'ลาดกระบัง':'กรุงเทพมหานคร','พระนครเหนือ':'กรุงเทพมหานคร',
+    'ศรีนครินทรวิโรฒ':'กรุงเทพมหานคร','ศิลปากร':'กรุงเทพมหานคร',
+    'บูรพา':'ชลบุรี','เชียงใหม่':'เชียงใหม่','นเรศวร':'พิษณุโลก',
+    'แม่ฟ้าหลวง':'เชียงราย','แม่โจ้':'เชียงใหม่','พะเยา':'พะเยา',
+    'ขอนแก่น':'ขอนแก่น','มหาสารคาม':'มหาสารคาม','อุบลราชธานี':'อุบลราชธานี',
+    'นครพนม':'นครพนม','สงขลานครินทร์':'สงขลา','วลัยลักษณ์':'นครศรีธรรมราช',
+    'ทักษิณ':'สงขลา','รังสิต':'ปทุมธานี','กรุงเทพ':'กรุงเทพมหานคร',
+    'ธุรกิจบัณฑิตย์':'กรุงเทพมหานคร','อัสสัมชัญ':'กรุงเทพมหานคร',
+    'หอการค้าไทย':'กรุงเทพมหานคร','ปัญญาภิวัฒน์':'กรุงเทพมหานคร',
+    'สวนสุนันทา':'กรุงเทพมหานคร','บ้านสมเด็จ':'กรุงเทพมหานคร',
+    'พระนครศรีอยุธยา':'พระนครศรีอยุธยา','ราชภัฏเชียงใหม่':'เชียงใหม่',
+    'ราชภัฏเชียงราย':'เชียงราย','ราชภัฏลำปาง':'ลำปาง','ราชภัฏอุตรดิตถ์':'อุตรดิตถ์',
+    'ราชภัฏกำแพงเพชร':'กำแพงเพชร','ราชภัฏนครสวรรค์':'นครสวรรค์','ราชภัฏพิบูลสงคราม':'พิษณุโลก',
+    'ราชภัฏเพชรบูรณ์':'เพชรบูรณ์','ราชภัฏสกลนคร':'สกลนคร','ราชภัฏนครราชสีมา':'นครราชสีมา',
+    'ราชภัฏบุรีรัมย์':'บุรีรัมย์','ราชภัฏสุรินทร์':'สุรินทร์','ราชภัฏมหาสารคาม':'มหาสารคาม',
+    'ราชภัฏชัยภูมิ':'ชัยภูมิ','ราชภัฏอุดรธานี':'อุดรธานี','ราชภัฏเลย':'เลย',
+    'ราชภัฏร้อยเอ็ด':'ร้อยเอ็ด','ราชภัฏยะลา':'ยะลา','ราชภัฏสุราษฎร์ธานี':'สุราษฎร์ธานี',
+    'ราชภัฏนครศรีธรรมราช':'นครศรีธรรมราช','ราชภัฏสงขลา':'สงขลา','ราชภัฏภูเก็ต':'ภูเก็ต',
+    'ราชภัฏหมู่บ้านจอมบึง':'ราชบุรี','ราชภัฏเพชรบุรี':'เพชรบุรี','ราชภัฏกาญจนบุรี':'กาญจนบุรี',
+    'ราชภัฏนครปฐม':'นครปฐม','ราชภัฏจันทรเกษม':'กรุงเทพมหานคร',
+    'ราชมงคลพระนคร':'กรุงเทพมหานคร','ราชมงคลกรุงเทพ':'กรุงเทพมหานคร',
+    'ราชมงคลตะวันออก':'ชลบุรี','ราชมงคลธัญบุรี':'ปทุมธานี',
+    'ราชมงคลรัตนโกสินทร์':'นครปฐม','ราชมงคลล้านนา':'เชียงใหม่',
+    'ราชมงคลศรีวิชัย':'สงขลา','ราชมงคลสุวรรณภูมิ':'พระนครศรีอยุธยา','ราชมงคลอีสาน':'นครราชสีมา',
+    'สุรนารี':'นครราชสีมา','ศรีปทุม':'กรุงเทพมหานคร','หัวเฉียว':'สมุทรปราการ',
+    'เซนต์จอห์น':'กรุงเทพมหานคร','นอร์ทกรุงเทพ':'กรุงเทพมหานคร',
+    'พายัพ':'เชียงใหม่','ฟาร์อีสเทอร์น':'เชียงใหม่','นอร์ท-เชียงใหม่':'เชียงใหม่',
+    'เวสเทิร์น':'กาญจนบุรี','เอเชียอาคเนย์':'นครราชสีมา',
+  };
+  for(const[k,v]of Object.entries(loc))if(name.includes(k))return v;
+  return '';
+}
+
+function getRegion(name, locationStr){
+  const regionByLoc={
+    'กรุงเทพ':'กลาง','นนทบุรี':'กลาง','ปทุมธานี':'กลาง','สมุทรปราการ':'กลาง',
+    'นครปฐม':'กลาง','ราชบุรี':'กลาง','กาญจนบุรี':'กลาง','สุพรรณบุรี':'กลาง',
+    'อยุธยา':'กลาง','สระบุรี':'กลาง','ลพบุรี':'กลาง','นครสวรรค์':'กลาง',
+    'กำแพงเพชร':'กลาง','เพชรบุรี':'กลาง','ประจวบ':'กลาง',
+    'เชียงใหม่':'เหนือ','เชียงราย':'เหนือ','ลำปาง':'เหนือ','ลำพูน':'เหนือ',
+    'แม่ฮ่องสอน':'เหนือ','พะเยา':'เหนือ','น่าน':'เหนือ','แพร่':'เหนือ',
+    'อุตรดิตถ์':'เหนือ','สุโขทัย':'เหนือ','พิษณุโลก':'เหนือ','เพชรบูรณ์':'เหนือ',
+    'ขอนแก่น':'อีสาน','อุดรธานี':'อีสาน','หนองคาย':'อีสาน','เลย':'อีสาน',
+    'นครราชสีมา':'อีสาน','บุรีรัมย์':'อีสาน','สุรินทร์':'อีสาน','ชัยภูมิ':'อีสาน',
+    'มหาสารคาม':'อีสาน','ร้อยเอ็ด':'อีสาน','กาฬสินธุ์':'อีสาน','สกลนคร':'อีสาน',
+    'นครพนม':'อีสาน','มุกดาหาร':'อีสาน','อุบลราชธานี':'อีสาน','ยโสธร':'อีสาน',
+    'ศรีสะเกษ':'อีสาน','อำนาจเจริญ':'อีสาน','บึงกาฬ':'อีสาน',
+    'สุราษฎร์':'ใต้','นครศรีธรรมราช':'ใต้','ภูเก็ต':'ใต้','สงขลา':'ใต้',
+    'สตูล':'ใต้','ตรัง':'ใต้','พัทลุง':'ใต้','ปัตตานี':'ใต้','ยะลา':'ใต้','นราธิวาส':'ใต้',
+    'ชลบุรี':'ตะวันออก','ระยอง':'ตะวันออก','จันทบุรี':'ตะวันออก',
+    'ตราด':'ตะวันออก','ฉะเชิงเทรา':'ตะวันออก','ปราจีนบุรี':'ตะวันออก',
+  };
+  const l=locationStr||getLocation(name);
+  for(const[k,v]of Object.entries(regionByLoc))if(l.includes(k))return v;
+  return '';
+}
+
+function mergeRows(rows,uniId){
+  const uniRow=rows[0]||{};
+  const uni={
+    id:uniId,
+    name_th:uniRow.uni_name_th||uniId,
+    name_en:uniRow.uni_name_en||'',
+    uni_type:normalizeType(uniRow.uni_type),
+    location:uniRow.location||getLocation(uniRow.uni_name_th||''),
+    region:uniRow.region||getRegion(uniRow.uni_name_th||'',uniRow.location||''),
+    emoji:getEmoji(uniRow.uni_name_th||''),
+    website:uniRow.website||'',
+    founded:uniRow.founded||'',
+    faculties:[],_fm:{},
+  };
+  for(const r of rows){
+    if(!uni._fm[r.faculty_id]) uni._fm[r.faculty_id]={
+      id:r.faculty_id,name_th:r.faculty_name_th||'',
+      tuition:r.tuition_per_year||null,criteria:r.criteria||'',
+      min_score:null,r1:0,r2:0,r3:0,r4:0,r5:0,history:[],
+    };
+    const f=uni._fm[r.faculty_id];
+    if(r.round_num>=1&&r.round_num<=5)f[`r${r.round_num}`]=(f[`r${r.round_num}`]||0)+(r.seats||0);
+    if(r.min_score&&(!f.min_score||r.min_score<f.min_score))f.min_score=parseFloat(r.min_score);
+    // เก็บ history — year มาจาก column 'year' ใน view
+    if(r.min_score&&r.year){
+      const yr=parseInt(r.year);
+      if(!isNaN(yr)&&!f.history.some(h=>h.year===yr&&h.round===r.round_num))
+        f.history.push({year:yr,round:r.round_num,score:parseFloat(r.min_score),seats:r.seats||0});
+    }
+  }
+  uni.faculties=Object.values(uni._fm);
+  delete uni._fm;
+  return uni;
+}
+
+async function loadData(){
+  const uniId=new URLSearchParams(location.search).get('id')||'u001';
+  document.getElementById('heroEl').innerHTML=`<div class="hero"><div class="hero-inner"><div class="skel" style="height:120px;border-radius:14px"></div></div></div>`;
+  try{
+    const rows = await SiteConfig.fetchAdmissions({ yearGte: SiteConfig.tcasYear() - 3, uniId, limit: 9999 });
+    if(rows.length){
+      boot(mergeRows(rows,uniId));
+      return;
+    }
+  }catch(e){
+    console.warn('Supabase error:',e.message);
+  }
+  try{
+    const local = await SiteConfig.fetchLocalData();
+    const uni = local.find((u) => u.id === uniId);
+    if(!uni){
+      document.getElementById('heroEl').innerHTML='<div class="hero"><div class="hero-inner"><div class="empty"><div class="empty-ico">🔍</div><div class="empty-msg">ไม่พบมหาวิทยาลัยนี้</div></div></div></div>';
+      return;
+    }
+    boot(uni);
+  }catch(localErr){
+    console.warn('Local JSON error:',localErr.message);
+    document.getElementById('heroEl').innerHTML='<div class="hero"><div class="hero-inner"><div class="empty"><div class="empty-ico">⚠️</div><div class="empty-msg">โหลดข้อมูลไม่ได้ กรุณา refresh</div></div></div></div>';
+  }
+}
+
+function boot(uni){
+_uni=uni; _facs=uni.faculties||[]; _activeCat='';
+const facs=_facs;
+const totalSeats=facs.reduce((a,f)=>a+fseats(f),0);
+const scores=facs.map(f=>f.min_score).filter(Boolean);
+const minScore=scores.length?Math.min(...scores).toFixed(2):'—';
+const rounds=[1,2,3,4,5].filter(r=>facs.some(f=>(f[`r${r}`]||0)>0));
+
+// ── HERO ─────────────────────────────────────────────────────
+document.title=`${uni.name_th} — I♥TCAS`;
+document.getElementById('heroEl').innerHTML=`
+<div class="hero">
+  <div class="hero-inner">
+    <a href="/universities" class="hero-back">← กลับรายชื่อมหาวิทยาลัย</a>
+    <div class="hero-top">
+      <div class="hero-logo">${uni.emoji||'🎓'}</div>
+      <div class="hero-info">
+        <span class="hero-badge hb-${uni.uni_type}">${uni.uni_type}</span>
+        <h1>${uni.name_th}</h1>
+        <div class="hero-en">${uni.name_en||''}</div>
+        <div class="hero-location">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          ${uni.location||''} · ${uni.region||''}
+          ${uni.website?`· <a href="${uni.website}" target="_blank" style="color:rgba(255,255,255,.55);text-decoration:none">${uni.website.replace('https://','')}</a>`:''}
+        </div>
+      </div>
+    </div>
+    <div class="stat-strip">
+      <div class="ss-item"><div class="ss-num">${facs.length}</div><div class="ss-label">คณะ</div></div>
+      <div class="ss-item"><div class="ss-num">${totalSeats.toLocaleString()}</div><div class="ss-label">ที่นั่งรวม</div></div>
+      <div class="ss-item"><div class="ss-num">${minScore}</div><div class="ss-label">คะแนนต่ำสุด</div></div>
+      <div class="ss-item"><div class="ss-num">${rounds.length}</div><div class="ss-label">รอบที่เปิดรับ</div></div>
+    </div>
+  </div>
+</div>`;
+
+// ── OVERVIEW ──────────────────────────────────────────────────
+// RNAMES moved to module level
+document.getElementById('overviewEl').innerHTML=`
+  <div class="overview-grid">
+    <div class="ov-card"><div class="ov-label">ประเภท</div><div class="ov-val">${uni.uni_type}</div></div>
+    <div class="ov-card"><div class="ov-label">ที่ตั้ง</div><div class="ov-val">${uni.location}</div><div class="ov-sub">${uni.region||''}</div></div>
+    <div class="ov-card"><div class="ov-label">จำนวนคณะ</div><div class="ov-val">${facs.length} คณะ</div></div>
+    <div class="ov-card"><div class="ov-label">ที่นั่งรวม</div><div class="ov-val">${totalSeats.toLocaleString()} คน</div></div>
+  </div>
+  <div class="sec-title">จำนวนรับแยกตามรอบ</div>
+  <div class="round-cards">
+    ${[1,2,3,4,5].map(r=>{
+      const s=facs.reduce((a,f)=>a+(f[`r${r}`]||0),0);
+      return`<div class="rc-box${s>0?' has':' none'}">
+        <div class="rc-num-label">รอบ ${r}</div>
+        <div class="rc-name">${RNAMES[r-1]}</div>
+        <div class="rc-count">${s>0?s.toLocaleString():'—'}</div>
+      </div>`;
+    }).join('')}
+  </div>`;
+
+// ── HISTORY ───────────────────────────────────────────────────
+(function(){
+  const allHist=facs.flatMap(f=>(f.history||[]).map(h=>({...h,fac:f.name_th})));
+  allHist.sort((a,b)=>b.year-a.year||b.round-a.round);
+  let html='';
+  if(!allHist.length){
+    html='<div class="empty"><div class="empty-ico">📊</div><div>ยังไม่มีข้อมูลคะแนนย้อนหลัง</div></div>';
+  } else {
+    html=`<table class="hist-table">
+      <thead><tr><th>ปี</th><th>คณะ</th><th>รอบ</th><th>คะแนนขั้นต่ำ</th><th>ที่นั่ง</th></tr></thead>
+      <tbody>
+        ${allHist.map((h,i)=>{
+          const prev=allHist[i+1];
+          const trend=prev&&prev.fac===h.fac?(h.score>prev.score?'▲':'▼'):'';
+          const cls=trend==='▲'?'trend-up':trend==='▼'?'trend-dn':'';
+          return`<tr><td>${h.year}</td><td>${h.fac}</td><td>รอบ ${h.round}</td>
+            <td style="font-family:var(--mono);font-weight:700">${h.score.toFixed(2)} <span class="${cls}" style="font-size:11px">${trend}</span></td>
+            <td style="font-family:var(--mono)">${h.seats.toLocaleString()}</td></tr>`;
+        }).join('')}
+      </tbody></table>`;
+  }
+  document.getElementById('historyEl').innerHTML=html;
+})();
+
+renderFacTable();
+} // end boot()
+
+
+// ── FACULTIES ─────────────────────────────────────────────────
+function renderFacTable(){
+  const facs=_facs; const activeCat=_activeCat; const uni=_uni;
+  const cats=[...new Set(facs.map(f=>gcat(f.name_th)))];
+  const shown=activeCat?facs.filter(f=>gcat(f.name_th)===activeCat):facs;
+  const mxSc=Math.max(...shown.map(f=>f.min_score||0));
+
+  document.getElementById('facultiesEl').innerHTML=`
+    <div class="fac-filter-row">
+      <button class="fftab${!activeCat?' active':''}" onclick="setCat('')">ทั้งหมด (${facs.length})</button>
+      ${cats.map(c=>`<button class="fftab${activeCat===c?' active':''}" onclick="setCat('${c}')">${c} (${facs.filter(f=>gcat(f.name_th)===c).length})</button>`).join('')}
+    </div>
+    <div style="overflow-x:auto">
+    <table class="fac-table">
+      <thead><tr>
+        <th>คณะ / สาขา</th>
+        <th>คะแนนขั้นต่ำ</th>
+        <th>รอบ</th>
+        <th>ที่นั่ง</th>
+        <th>ค่าเทอม</th>
+      </tr></thead>
+      <tbody>
+        ${shown.map(f=>{
+          const cat=gcat(f.name_th);
+          const sc=f.min_score;
+          const pct=mxSc?Math.round((sc||0)/mxSc*100):0;
+          const tu=f.tuition===0?'<span class="tu-free">ฟรี</span>':f.tuition?`<span class="tu-val">${(f.tuition/1000).toFixed(0)}K</span>`:'<span class="tu-val">—</span>';
+          const rps=[1,2,3,4,5].map(r=>`<div class="rp${(f[`r${r}`]||0)>0?' has':''}">${r}</div>`).join('');
+          return`<tr onclick="openFac('${f.id}')">
+            <td><div class="fac-name"><span class="cat-dot dot-${cat}"></span>${f.name_th}</div><div class="fac-cat">${cat}</div></td>
+            <td>${sc?`<div class="score-val">${sc.toFixed(2)}</div><div class="score-bar-wrap"><div class="score-bar"><div class="score-fill" style="width:${pct}%"></div></div></div>`:'<span style="color:var(--border2);font-family:var(--mono)">—</span>'}</td>
+            <td><div class="r-pips">${rps}</div></td>
+            <td><span style="font-family:var(--mono);font-weight:600">${fseats(f).toLocaleString()}</span></td>
+            <td>${tu}</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table></div>`;
+}
+
+function setCat(c){_activeCat=c;renderFacTable();}
+
+
+// ── FAC MODAL ─────────────────────────────────────────────────
+function openFac(fid){
+  const facs=_facs; const uni=_uni;
+  const f=facs.find(f=>f.id===fid);if(!f)return;
+  document.getElementById('md_title').textContent=f.name_th;
+  document.getElementById('md_sub').textContent=`${uni.name_th} · ${gcat(f.name_th)}`;
+  document.getElementById('md_seats').textContent=fseats(f).toLocaleString()+' คน';
+  document.getElementById('md_score').textContent=f.min_score?f.min_score.toFixed(2):'—';
+  document.getElementById('md_tuition').textContent=f.tuition===0?'ฟรี':f.tuition?`${f.tuition.toLocaleString()} บาท`:'—';
+  document.getElementById('md_cat').textContent=gcat(f.name_th);
+  document.getElementById('md_criteria').textContent=f.criteria||'—';
+  document.getElementById('md_rounds').innerHTML=[1,2,3,4,5].map(r=>{
+    const s=f[`r${r}`]||0;
+    return`<div class="m-rd${s>0?' has':' none'}">
+      <div class="m-rd-l">รอบ ${r}</div>
+      <div class="m-rd-n">${RNAMES[r-1]}</div>
+      <div class="m-rd-v">${s>0?s.toLocaleString():'—'}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('facModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){
+  document.getElementById('facModal').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+// ── TABS ──────────────────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tp_'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+
+loadData();
+
+// 🥚 Easter egg — Noppadon Pumpong
+(function(){
+  // Console
+  console.log('%c I♥TCAS ','background:#1a56a0;color:#fff;font-size:13px;font-weight:800;padding:4px 12px;border-radius:4px;font-family:monospace');
+  console.log('%c Noppadon Pumpong','color:#4a9eff;font-size:12px;font-family:monospace');
+  console.log('%c 💡 Konami: ↑↑↓↓←→←→BA','color:#6e7681;font-size:11px;font-family:monospace');
+
+  // Konami Code
+  const CODE=[38,38,40,40,37,39,37,39,66,65];let idx=0;
+  document.addEventListener('keydown',e=>{
+    idx=e.keyCode===CODE[idx]?idx+1:e.keyCode===CODE[0]?1:0;
+    if(idx===CODE.length){idx=0;
+      const el=document.createElement('div');
+      el.innerHTML=`<div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:32px 40px;z-index:9999;font-family:'IBM Plex Mono',monospace;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.3)"><div style="font-size:28px;margin-bottom:12px">👋</div><div style="font-size:18px;font-weight:700;color:var(--tx)">Noppadon Pumpong</div><button onclick="this.closest('div').parentElement.remove()" style="margin-top:20px;padding:6px 18px;background:var(--ac);color:#fff;border:none;border-radius:7px;font-family:'IBM Plex Mono',monospace;font-size:12px;cursor:pointer">OK</button></div>`;
+      document.body.appendChild(el);setTimeout(()=>el.remove(),5000);
+    }
+  });
+
+  // Logo 5 คลิก
+  let n=0,t;
+  document.querySelector('.logo')?.addEventListener('click',e=>{
+    e.preventDefault();n++;clearTimeout(t);t=setTimeout(()=>n=0,1200);
+    if(n===5){n=0;const d=document.createElement('div');
+      d.style.cssText='position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--ac);color:#fff;padding:10px 22px;border-radius:100px;font-family:"IBM Plex Mono",monospace;font-size:13px;z-index:9999;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(26,86,160,.4)';
+      d.textContent='👋 Noppadon Pumpong';document.body.appendChild(d);setTimeout(()=>d.remove(),2500);}
+  });
+
+  // Animation styles
+  const s=document.createElement('style');
+  s.textContent='@keyframes konamiIn{from{opacity:0;transform:translate(-50%,-50%) scale(.9)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}';
+  document.head.appendChild(s);
+})();
+
+</script>
+
+<!-- BACK TO TOP -->
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="กลับด้านบน">↑</button>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <span class="footer-logo">I♥TCAS</span>
+      · ข้อมูลจาก <a href="https://www.mytcas.com" target="_blank" class="footer-link">mytcas.com</a>
+    </div>
+    <div class="footer-credit">NopX_AI</div>
+  </div>
+</footer>
+
+<script>
+// Back to top visibility
+window.addEventListener('scroll',()=>{
+  const b=document.getElementById('btt');
+  if(b){b.style.opacity=window.scrollY>400?'1':'0';b.style.pointerEvents=window.scrollY>400?'auto':'none';}
+});
+</script>
+
+</body>
+</html>

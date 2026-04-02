@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="dark">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design.css">
+<meta name="description" content="ปฏิทิน TCAS วันรับสมัคร ประกาศผล และยืนยันสิทธิ์ทุกรอบ">
+
+<title>ปฏิทิน TCAS — I♥TCAS</title>
+  <!-- OG / Social -->
+  <meta property="og:type"        content="website">
+  <meta property="og:site_name"   content="iLoveTCAS">
+  <meta property="og:title"       content="ปฏิทิน TCAS — iLoveTCAS">
+  <meta property="og:description" content="กำหนดการรับสมัคร ประกาศผล และยืนยันสิทธิ์ ทุกรอบ TCAS">
+  <meta property="og:image"       content="https://ilovetcas.vercel.app/og-image.png">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url"         content="https://ilovetcas.vercel.app/timeline">
+  <meta property="og:locale"      content="th_TH">
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="ปฏิทิน TCAS — iLoveTCAS">
+  <meta name="twitter:description" content="กำหนดการรับสมัคร ประกาศผล และยืนยันสิทธิ์ ทุกรอบ TCAS">
+  <meta name="twitter:image"       content="https://ilovetcas.vercel.app/og-image.png">
+  <!-- Theme -->
+  <meta name="theme-color"         content="#4361ee">
+  
+
+
+<script src="site.js"></script>
+</head>
+<body>
+
+<header>
+  <a href="/" class="logo">I♥TCAS</a>
+  <nav>
+    <a href="/search">ค้นหาคณะ</a>
+    <a href="/universities">มหาวิทยาลัย</a>
+    <a href="/compare">เปรียบเทียบ</a>
+    <a href="/timeline" class="active">ปฏิทิน</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag"><span class="hero-dot"></span>I♥TCAS · <span data-tcas-year>TCAS69</span></div>
+    <h1>ปฏิทินรับสมัคร<br><span data-tcas-year>TCAS69</span></h1>
+    <div class="hero-sub">วันรับสมัคร ประกาศผล ยืนยันสิทธิ์ ทุกรอบ</div>
+  </div>
+</div>
+
+<main class="main">
+  <div class="today-bar">
+    <div class="today-dot"></div>
+    วันนี้ <strong id="todayStr"></strong>
+  </div>
+  <div id="timelineNotice" class="tip" style="margin-bottom:18px;display:none"></div>
+  <div id="roundsEl"></div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-ico">📋</div><div class="tip-title">สมัครได้กี่โครงการ</div><div class="tip-desc">รอบ 1–2 มหาลัยกำหนดเอง / รอบ 3–4 เลือกได้ 10 อันดับ ผ่าน mytcas.com</div></div>
+    <div class="tip"><div class="tip-ico">⚠️</div><div class="tip-title">สละสิทธิ์ให้ทันเวลา</div><div class="tip-desc">สละได้แค่ 1 ครั้งตลอด TCAS — พลาดแล้วพลาดเลย</div></div>
+    <div class="tip"><div class="tip-ico">💰</div><div class="tip-title">ค่าสมัคร</div><div class="tip-desc">รอบ 1–2 แล้วแต่มหาลัย บางที่ฟรี / รอบ 3–4 ประมาณ 150 บาท/อันดับ</div></div>
+    <div class="tip"><div class="tip-ico">📱</div><div class="tip-title">ตรวจผลได้ที่</div><div class="tip-desc">student.mytcas.com หรือแอป MYTCAS ผลออกพร้อมกันทั่วประเทศ</div></div>
+  </div>
+</main>
+
+<script>
+const ROUNDS=[
+  {num:1,name:'รอบ 1 Portfolio',eng:'มหาวิทยาลัยกำหนดเอง',cls:'rn1',dc:'dc1',steps:[
+    {label:'รับสมัคร',date:'มหาวิทยาลัยกำหนด',note:'แต่ละมหาลัยเปิดรับต่างกัน ตรวจสอบโดยตรง',d:null},
+    {label:'ประกาศผลในระบบ',date:'6 ก.พ. 2569',note:'',d:new Date(2026,1,6)},
+    {label:'ยืนยันสิทธิ์',date:'6–7 ก.พ. 2569',note:'',d:new Date(2026,1,6)},
+    {label:'สละสิทธิ์ครั้งที่ 1',date:'8 ก.พ. 2569',note:'เพื่อเข้าร่วมรอบ 2 หรือ 3',d:new Date(2026,1,8)},
+    {label:'สละสิทธิ์ครั้งที่ 2',date:'4 พ.ค. 2569',note:'เพื่อเข้าร่วมรอบ 3',d:new Date(2026,4,4)},
+  ]},
+  {num:2,name:'รอบ 2 Quota',eng:'เขตพื้นที่และโควตาพิเศษ',cls:'rn2',dc:'dc2',steps:[
+    {label:'รับสมัคร',date:'มหาวิทยาลัยกำหนด',note:'',d:null},
+    {label:'ประกาศผลในระบบ',date:'2 พ.ค. 2569',note:'',d:new Date(2026,4,2)},
+    {label:'ยืนยันสิทธิ์',date:'2–3 พ.ค. 2569',note:'',d:new Date(2026,4,2)},
+    {label:'สละสิทธิ์',date:'4 พ.ค. 2569',note:'เพื่อเข้าร่วมรอบ 3',d:new Date(2026,4,4)},
+  ]},
+  {num:3,name:'รอบ 3 Admission',eng:'สมัครผ่าน mytcas.com เลือกได้ 10 อันดับ',cls:'rn3',dc:'dc3',steps:[
+    {label:'เปิดรับสมัคร',date:'6–12 พ.ค. 2569',note:'สมัครที่ mytcas.com',d:new Date(2026,4,6)},
+    {label:'ประกาศผลครั้งที่ 1',date:'20 พ.ค. 2569',note:'',d:new Date(2026,4,20)},
+    {label:'ยืนยันสิทธิ์',date:'20–21 พ.ค. 2569',note:'',d:new Date(2026,4,20)},
+    {label:'ประกาศผลครั้งที่ 2',date:'26 พ.ค. 2569',note:'ที่นั่งจากผู้สละสิทธิ์รอบแรก',d:new Date(2026,4,26)},
+    {label:'สละสิทธิ์',date:'27 พ.ค. 2569',note:'เฉพาะผู้ยืนยันสิทธิ์รอบ 3 และไม่เคยสละมาก่อน',d:new Date(2026,4,27)},
+  ]},
+  {num:4,name:'รอบ 4 Direct Admission',eng:'รับตรงอิสระผ่านระบบมหาวิทยาลัย',cls:'rn4',dc:'dc4',steps:[
+    {label:'ประกาศจำนวนที่นั่ง',date:'28 พ.ค. 2569',note:'ดูที่ mytcas.com',d:new Date(2026,4,28)},
+    {label:'รับสมัคร',date:'28 พ.ค. – 14 มิ.ย. 2569',note:'แต่ละมหาวิทยาลัยเปิดรับไม่พร้อมกัน',d:new Date(2026,4,28)},
+    {label:'ประกาศผลครั้งที่ 1',date:'6 มิ.ย. 2569',note:'',d:new Date(2026,5,6)},
+    {label:'ยืนยันสิทธิ์ครั้งที่ 1',date:'6–7 มิ.ย. 2569',note:'',d:new Date(2026,5,6)},
+    {label:'ประกาศผลครั้งที่ 2',date:'17 มิ.ย. 2569',note:'',d:new Date(2026,5,17)},
+    {label:'ยืนยันสิทธิ์ครั้งที่ 2',date:'17–18 มิ.ย. 2569',note:'',d:new Date(2026,5,17)},
+  ]},
+];
+
+function getStatus(r){
+  const now=new Date();
+  const dates=r.steps.map(s=>s.d).filter(Boolean);
+  if(!dates.length)return'upcoming';
+  const first=new Date(Math.min(...dates));
+  const last=new Date(Math.max(...dates));
+  if(now<first)return'upcoming';
+  if(now>last)return'done';
+  return'open';
+}
+function stepState(d){
+  if(!d)return'future';
+  const now=new Date();
+  const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const sd=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+  if(+sd===+today)return'now';
+  if(sd<today)return'past';
+  return'future';
+}
+
+function render(){
+  const now=new Date();
+  document.getElementById('todayStr').textContent=now.toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'});
+  const STATUS={open:'เปิดรับอยู่',upcoming:'ยังไม่เปิด',done:'ปิดแล้ว'};
+  const SCLS={open:'s-open',upcoming:'s-upcoming',done:'s-done'};
+  document.getElementById('roundsEl').innerHTML=ROUNDS.map(r=>{
+    const st=getStatus(r);
+    const steps=r.steps.map(s=>{
+      const ss=stepState(s.d);
+      return`<div class="step ${ss} ${r.dc}">
+        <div class="step-line-wrap"><div class="step-dot"></div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <div class="step-label">${s.label}${ss==='now'?' ← วันนี้':''}</div>
+          <div class="step-date">${s.date}</div>
+          ${s.note?`<div class="step-note">${s.note}</div>`:''}
+        </div>
+      </div>`;
+    }).join('');
+    return`<div class="round-card">
+      <div class="round-hdr">
+        <div class="round-num ${r.cls}">R${r.num}</div>
+        <div class="round-info"><div class="round-name">${r.name}</div><div class="round-eng">${r.eng}</div></div>
+        <span class="status-pill ${SCLS[st]}">${STATUS[st]}</span>
+      </div>
+      <div class="round-body"><div class="steps">${steps}</div></div>
+    </div>`;
+  }).join('');
+}
+
+
+
+
+render();
+
+// 🥚 Easter egg — Noppadon Pumpong
+(function(){
+  // Console
+  console.log('%c I♥TCAS ','background:#1a56a0;color:#fff;font-size:13px;font-weight:800;padding:4px 12px;border-radius:4px;font-family:monospace');
+  console.log('%c Noppadon Pumpong','color:#4a9eff;font-size:12px;font-family:monospace');
+  console.log('%c 💡 Konami: ↑↑↓↓←→←→BA','color:#6e7681;font-size:11px;font-family:monospace');
+
+  // Konami Code
+  const CODE=[38,38,40,40,37,39,37,39,66,65];let idx=0;
+  document.addEventListener('keydown',e=>{
+    idx=e.keyCode===CODE[idx]?idx+1:e.keyCode===CODE[0]?1:0;
+    if(idx===CODE.length){idx=0;
+      const el=document.createElement('div');
+      el.innerHTML=`<div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:32px 40px;z-index:9999;font-family:'IBM Plex Mono',monospace;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.3)"><div style="font-size:28px;margin-bottom:12px">👋</div><div style="font-size:18px;font-weight:700;color:var(--tx)">Noppadon Pumpong</div><button onclick="this.closest('div').parentElement.remove()" style="margin-top:20px;padding:6px 18px;background:var(--ac);color:#fff;border:none;border-radius:7px;font-family:'IBM Plex Mono',monospace;font-size:12px;cursor:pointer">OK</button></div>`;
+      document.body.appendChild(el);setTimeout(()=>el.remove(),5000);
+    }
+  });
+
+  // Logo 5 คลิก
+  let n=0,t;
+  document.querySelector('.logo')?.addEventListener('click',e=>{
+    e.preventDefault();n++;clearTimeout(t);t=setTimeout(()=>n=0,1200);
+    if(n===5){n=0;const d=document.createElement('div');
+      d.style.cssText='position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--ac);color:#fff;padding:10px 22px;border-radius:100px;font-family:"IBM Plex Mono",monospace;font-size:13px;z-index:9999;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(26,86,160,.4)';
+      d.textContent='👋 Noppadon Pumpong';document.body.appendChild(d);setTimeout(()=>d.remove(),2500);}
+  });
+
+  // Animation styles
+  const s=document.createElement('style');
+  s.textContent='@keyframes konamiIn{from{opacity:0;transform:translate(-50%,-50%) scale(.9)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}';
+  document.head.appendChild(s);
+})();
+
+</script>
+
+<!-- BACK TO TOP -->
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="กลับด้านบน">↑</button>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <span class="footer-logo">I♥TCAS</span>
+      · ข้อมูลจาก <a href="https://www.mytcas.com" target="_blank" class="footer-link">mytcas.com</a>
+    </div>
+    <div class="footer-credit">NopX_AI</div>
+  </div>
+</footer>
+
+<script>
+// Back to top visibility
+window.addEventListener('scroll',()=>{
+  const b=document.getElementById('btt');
+  if(b){b.style.opacity=window.scrollY>400?'1':'0';b.style.pointerEvents=window.scrollY>400?'auto':'none';}
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="dark">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design.css">
+<style>
+/* ── 404 PAGE ── */
+.page{display:flex;align-items:center;justify-content:center;
+  min-height:calc(100vh - 56px - 66px);padding:40px 20px;position:relative;z-index:1;}
+.inner{text-align:center;max-width:440px;}
+.code{font-family:var(--logo-font);font-size:clamp(80px,15vw,140px);font-weight:700;line-height:1;
+  background:linear-gradient(135deg,#a78bfa,#67e8f9);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 30px rgba(167,139,250,.5));margin-bottom:0;}
+.icon{font-size:48px;margin-bottom:16px;}
+h1{font-size:clamp(26px,5vw,40px);font-weight:900;color:var(--tx);margin-bottom:12px;line-height:1.15;}
+h1 span{background:linear-gradient(135deg,#a78bfa,#67e8f9);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.sub{font-size:17px;color:var(--mu);margin-bottom:36px;line-height:1.65;}
+.btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn-p{padding:12px 28px;background:var(--ac);color:#fff;border-radius:10px;
+  text-decoration:none;font-weight:700;font-size:16px;transition:all .2s;}
+.btn-p:hover{background:var(--ac2);transform:translateY(-2px);}
+.btn-s{padding:12px 28px;background:transparent;color:var(--tx2);
+  border:1px solid var(--bd);border-radius:10px;text-decoration:none;
+  font-weight:600;font-size:16px;transition:all .2s;}
+.btn-s:hover{border-color:var(--ac);color:var(--ac);}
+</style>
+<meta name="description" content="ไม่พบหน้าที่ต้องการ กลับไปค้นหาคณะที่ I♥TCAS ได้เลย">
+
+<title>404 — I♥TCAS</title>
+  <!-- OG / Social -->
+  <meta property="og:type"        content="website">
+  <meta property="og:site_name"   content="iLoveTCAS">
+  <meta property="og:title"       content="ไม่พบหน้านี้ — iLoveTCAS">
+  <meta property="og:description" content="ไม่พบหน้าที่ต้องการ กลับไปค้นหาคณะและมหาวิทยาลัยได้เลย">
+  <meta property="og:image"       content="https://ilovetcas.vercel.app/og-image.png">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url"         content="https://ilovetcas.vercel.app/404">
+  <meta property="og:locale"      content="th_TH">
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="ไม่พบหน้านี้ — iLoveTCAS">
+  <meta name="twitter:description" content="ไม่พบหน้าที่ต้องการ กลับไปค้นหาคณะและมหาวิทยาลัยได้เลย">
+  <meta name="twitter:image"       content="https://ilovetcas.vercel.app/og-image.png">
+  <!-- Theme -->
+  <meta name="theme-color"         content="#4361ee">
+  
+
+
+<script src="site.js"></script>
+</head>
+<body>
+<header>
+  <a href="/" class="logo">I♥TCAS</a>
+  <nav>
+    <a href="/search">ค้นหาคณะ</a>
+    <a href="/universities">มหาวิทยาลัย</a>
+    <a href="/compare">เปรียบเทียบ</a>
+    <a href="/timeline">ปฏิทิน</a>
+  </nav>
+</header>
+
+<div class="page">
+  <div class="inner">
+    <div class="code">404</div>
+    <div class="icon">🔍</div>
+    <h1>ไม่พบ<span>หน้านี้</span></h1>
+    <p class="sub">URL นี้ไม่มีอยู่ หรือย้ายไปที่อื่นแล้ว<br>กลับไปค้นหาคณะได้เลยครับ</p>
+    <div class="btns">
+      <a href="/search" class="btn-p">กลับหน้าหลัก</a>
+      <a href="/universities" class="btn-s">ดูมหาวิทยาลัย</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <span class="footer-logo">I♥TCAS</span>
+      · ข้อมูลจาก <a href="https://www.mytcas.com" target="_blank" class="footer-link">mytcas.com</a>
+    </div>
+    <div class="footer-credit">NopX_AI</div>
+  </div>
+</footer>
+
+<script>
+
+
+</script>
+
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="กลับด้านบน">↑</button>
+<script>
+window.addEventListener('scroll',()=>{
+  const b=document.getElementById('btt');
+  if(b){b.style.opacity=window.scrollY>300?'1':'0';b.style.pointerEvents=window.scrollY>300?'auto':'none';}
+});
+</script>
+</body>
+</html>

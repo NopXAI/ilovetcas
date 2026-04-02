@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="dark">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design.css">
+
+
+<title>I♥TCAS — ค้นหาคณะ มหาวิทยาลัย คะแนนขั้นต่ำ</title>
+<meta name="description" content="รวมข้อมูลคณะ จำนวนรับ คะแนนขั้นต่ำ และค่าเทอม ทุกมหาวิทยาลัยที่เข้าร่วม TCAS">
+  <!-- OG / Social sharing -->
+  <meta property="og:type"        content="website">
+  <meta property="og:site_name"   content="iLoveTCAS">
+  <meta property="og:title"       content="iLoveTCAS — ค้นหาคณะและมหาวิทยาลัย">
+  <meta property="og:description" content="ค้นหาคณะ จำนวนรับ คะแนนขั้นต่ำ ค่าเทอม ทุกมหาวิทยาลัยที่เข้าร่วม TCAS ในที่เดียว">
+  <meta property="og:image"       content="https://ilovetcas.vercel.app/og-image.png">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url"         content="https://ilovetcas.vercel.app/search">
+  <meta property="og:locale"      content="th_TH">
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="iLoveTCAS — ค้นหาคณะและมหาวิทยาลัย">
+  <meta name="twitter:description" content="ค้นหาคณะ จำนวนรับ คะแนนขั้นต่ำ ค่าเทอม ทุกมหาวิทยาลัยที่เข้าร่วม TCAS ในที่เดียว">
+  <meta name="twitter:image"       content="https://ilovetcas.vercel.app/og-image.png">
+  <!-- Theme -->
+  <meta name="theme-color"         content="#4361ee">
+
+
+
+
+<script src="site.js"></script>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a href="/" class="logo">I♥TCAS</a>
+  <nav>
+    <a href="/search" class="active">ค้นหาคณะ</a>
+    <a href="/universities">มหาวิทยาลัย</a>
+    <a href="/compare">เปรียบเทียบ</a>
+    <a href="/timeline">ปฏิทิน</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">
+      <span class="hero-dot"></span>
+      I♥TCAS · <span data-tcas-year>TCAS69</span> · <span id="heroDate">อัปเดตล่าสุด</span>
+    </div>
+    <h1>หาคณะที่ใช่<br><span>เทียบข้อมูลก่อนตัดสินใจ</span></h1>
+    <div class="hero-sub">จำนวนรับ · คะแนนขั้นต่ำ · ค่าเทอม · ครบทุกมหาวิทยาลัย TCAS</div>
+    <div class="search-wrap">
+      <div class="search-ico">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </div>
+      <input id="searchInput" type="text" placeholder="พิมพ์ชื่อคณะ หรือมหาวิทยาลัย..." autocomplete="off">
+      <button class="btn-search" onclick="doSearch()">ค้นหา</button>
+    </div>
+    <div class="stats-row">
+      <div class="stat-item">
+        <div class="stat-num" id="statUni">—</div>
+        <div class="stat-label">มหาวิทยาลัย</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-num" id="statFac">—</div>
+        <div class="stat-label">คณะ / สาขา</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-num" id="statSeats">—</div>
+        <div class="stat-label">ที่นั่งทั้งหมด</div>
+      </div>
+      <div class="countdown-pill" id="cdPill">
+        อีก <span class="countdown-num" id="cdNum"></span> วัน · <span id="cdLabel"></span>
+      </div>
+    </div>
+    <!-- Visitor Counter -->
+    <div id="visitorBadge" style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:var(--ac-bg);border:1px solid var(--bd);border-radius:100px;font-size:13px;color:var(--tx2);margin-top:16px;">
+      <span style="font-size:13px">👀</span>
+      <span style="font-weight:600">ผู้เข้าชม</span>
+      <img src="https://hits.sh/ilovetcas.vercel.app.svg?style=flat&label=&color=6d83ff&labelColor=0d1f38" alt="visitors" style="height:18px;vertical-align:middle;border-radius:4px;" onerror="this.closest('#visitorBadge').style.display='none'">
+    </div>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="filter-inner">
+    <button class="ftab active" data-cat="">ทุกสาขา</button>
+    <button class="ftab" data-cat="วิศวกรรม">วิศวกรรม</button>
+    <button class="ftab" data-cat="แพทย์">แพทย์</button>
+    <button class="ftab" data-cat="วิทยาศาสตร์">วิทยาศาสตร์</button>
+    <button class="ftab" data-cat="บริหาร">บริหาร</button>
+    <button class="ftab" data-cat="ครุศาสตร์">ครุศาสตร์</button>
+    <button class="ftab" data-cat="ศิลปะ">ศิลปะ</button>
+    <button class="ftab" data-cat="สังคม">สังคม</button>
+    <div class="f-sep"></div>
+    <select class="fsel" id="typeFilter">
+      <option value="">ทุกประเภท</option>
+      <option value="รัฐบาล">รัฐบาล</option>
+      <option value="เอกชน">เอกชน</option>
+      <option value="ราชภัฏ">ราชภัฏ</option>
+      <option value="ราชมงคล">ราชมงคล</option>
+    </select>
+    <select class="fsel" id="regionFilter">
+      <option value="">ทุกภาค</option>
+      <option value="กลาง">ภาคกลาง</option>
+      <option value="เหนือ">ภาคเหนือ</option>
+      <option value="อีสาน">ภาคอีสาน</option>
+      <option value="ใต้">ภาคใต้</option>
+      <option value="ตะวันออก">ภาคตะวันออก</option>
+    </select>
+    <select class="fsel" id="roundFilter">
+      <option value="">ทุกรอบ</option>
+      <option value="1">รอบ 1 Portfolio</option>
+      <option value="2">รอบ 2 Quota</option>
+      <option value="3">รอบ 3 Admission</option>
+      <option value="4">รอบ 4 Direct</option>
+    </select>
+    <select class="fsel" id="tuitionFilter">
+      <option value="">ทุกค่าเทอม</option>
+      <option value="free">ฟรี</option>
+      <option value="20k">ไม่เกิน 20,000</option>
+      <option value="50k">ไม่เกิน 50,000</option>
+    </select>
+    <div class="f-right">
+      <button class="f-btn" onclick="toggleAll(false)">ย่อทั้งหมด</button>
+      <button class="f-btn" onclick="toggleAll(true)">ขยายทั้งหมด</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="result-meta">
+    แสดง <span class="result-count" id="resUni">—</span> มหาวิทยาลัย
+    · <span class="result-count" id="resFac">—</span> คณะ
+    <span id="dataBadge">⏳</span>
+    <div class="sort-wrap">
+      เรียงตาม
+      <select class="fsel" id="sortFilter" style="font-size:13px">
+        <option value="uni">ชื่อมหาวิทยาลัย</option>
+        <option value="seats">ที่นั่ง (มาก→น้อย)</option>
+        <option value="fac">จำนวนคณะ</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Banners -->
+  <div class="banner banner-warn" id="apiWarn">
+    <span style="font-size:20px;flex-shrink:0">⚠️</span>
+    <div class="banner-body">
+      <strong>กำลังเตรียมแหล่งข้อมูล</strong><br>
+      <span style="font-size:13px;opacity:.85">หากฐานข้อมูลล่ม ระบบจะสลับไปใช้ไฟล์ข้อมูลสำรองอัตโนมัติ</span>
+    </div>
+    <button class="banner-close" onclick="this.closest('.banner').style.display='none'">✕</button>
+  </div>
+  <div class="banner banner-info" id="eventBanner">
+    <span style="font-size:20px;flex-shrink:0">📅</span>
+    <div class="banner-body" id="eventBannerBody"></div>
+    <a href="/timeline" style="font-size:13px;color:var(--ac);text-decoration:none;flex-shrink:0">ดูปฏิทิน →</a>
+  </div>
+
+  <div id="mainContent">
+    <div class="skel-hdr skel"></div>
+    <div class="skel-hdr skel" style="animation-delay:.1s"></div>
+    <div class="skel-hdr skel" style="animation-delay:.2s"></div>
+  </div>
+  <div id="emptyState">
+    <div class="empty-icon">🔍</div>
+    <div class="empty-msg">ไม่พบข้อมูลที่ตรงกับการค้นหา ลองเปลี่ยนคำค้นหาดูครับ</div>
+  </div>
+</main>
+
+<!-- WISH FAB -->
+<button id="wishFab" onclick="toggleWishPanel()" title="รายการที่บันทึกไว้">
+  ❤️<span id="wishBadge"></span>
+</button>
+<div id="wishPanel">
+  <div class="wp-hdr">
+    รายการที่บันทึก
+    <span id="wishCount" style="font-family:var(--mono);font-size:12px;color:var(--mu);margin-left:4px"></span>
+    <button onclick="clearWish()" style="margin-left:auto;background:none;border:none;font-size:12px;color:var(--mu);cursor:pointer">ล้าง</button>
+    <button onclick="toggleWishPanel()" style="background:none;border:none;font-size:17px;color:var(--mu);cursor:pointer;margin-left:6px">✕</button>
+  </div>
+  <div class="wp-body" id="wishList">
+    <div class="wp-empty">กด ❤️ ที่ card คณะไหนก็ได้<br>เพื่อบันทึกไว้ดูทีหลัง</div>
+  </div>
+</div>
+
+<!-- COMPARE BAR -->
+<div id="cmpBar">
+  <div style="flex:1;min-width:0">
+    <div style="font-size:10px;color:rgba(255,255,255,.4);margin-bottom:6px;letter-spacing:1px;text-transform:uppercase;font-family:var(--mono)">เปรียบเทียบ</div>
+    <div class="cmp-slots" id="cmpSlots"></div>
+  </div>
+  <button class="btn-cmp-clear" onclick="clearCmp()">ล้าง</button>
+  <button class="btn-cmp" onclick="goCmp()">เปรียบเทียบ →</button>
+</div>
+
+<!-- CALC MODAL -->
+<div class="overlay" id="calcModal" onclick="closeOnBg(event,'calcModal')">
+  <div class="modal" style="max-width:560px">
+    <div class="m-hdr">
+      <div>
+        <div class="m-title">เช็คคะแนนของฉัน</div>
+        <div class="m-sub">กรอกแล้วดูทันทีว่าคะแนนพอสำหรับคณะไหนบ้าง</div>
+      </div>
+      <button class="m-close" onclick="closeModal('calcModal')">✕</button>
+    </div>
+    <div class="m-body">
+      <div class="score-grid">
+        <div class="score-field"><label>TGAT1 การสื่อสาร</label><input type="number" id="s_tgat1" min="0" max="100" placeholder="0–100" oninput="liveCalc()"></div>
+        <div class="score-field"><label>TGAT2 การคิดอนาคต</label><input type="number" id="s_tgat2" min="0" max="100" placeholder="0–100" oninput="liveCalc()"></div>
+        <div class="score-field"><label>TGAT3 สมรรถนะ</label><input type="number" id="s_tgat3" min="0" max="100" placeholder="0–100" oninput="liveCalc()"></div>
+        <div class="score-field"><label>TPAT วิชาชีพ / เฉพาะ</label><input type="number" id="s_tpat" min="0" max="100" placeholder="0–100" oninput="liveCalc()"></div>
+        <div class="score-field"><label>A-Level คณิตศาสตร์</label><input type="number" id="s_math" min="0" max="100" placeholder="0–100" oninput="liveCalc()"></div>
+        <div class="score-field"><label>A-Level วิทยาศาสตร์</label><input type="number" id="s_sci" min="0" max="100" placeholder="0–100" oninput="liveCalc()"></div>
+        <div class="score-field"><label>A-Level ภาษาไทย</label><input type="number" id="s_thai" min="0" max="100" placeholder="0–100" oninput="liveCalc()"></div>
+        <div class="score-field"><label>A-Level ภาษาอังกฤษ</label><input type="number" id="s_eng" min="0" max="100" placeholder="0–100" oninput="liveCalc()"></div>
+      </div>
+      <div class="calc-actions">
+        <button class="btn-primary" onclick="liveCalc()">คำนวณ</button>
+        <button class="btn-ghost" onclick="clearCalc()">ล้าง</button>
+        <span id="calcAvg" style="font-family:var(--mono);font-size:13px;color:var(--mu);margin-left:4px"></span>
+      </div>
+      <div id="calcResults"><div class="calc-empty">กรอกคะแนนด้านบนแล้วผลจะออกมาที่นี่เลย</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- FAC DETAIL MODAL -->
+<div class="overlay" id="facModal" onclick="closeOnBg(event,'facModal')">
+  <div class="modal" style="max-width:720px">
+    <div class="m-hdr">
+      <div>
+        <div class="m-title" id="fm_title">—</div>
+        <div class="m-sub" id="fm_sub">—</div>
+      </div>
+      <button class="m-close" onclick="closeModal('facModal')">✕</button>
+    </div>
+    <div class="m-body">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="ov">ภาพรวม</button>
+        <button class="tab-btn" data-tab="sc">คะแนนย้อนหลัง</button>
+        <button class="tab-btn" data-tab="au">คณะนี้ทุกมหาลัย</button>
+      </div>
+      <div class="tab-panel active" id="tp_ov">
+        <div class="info-grid">
+          <div class="info-card"><div class="info-card-label">ที่นั่งรวม</div><div class="info-card-value" id="fm_seats">—</div></div>
+          <div class="info-card"><div class="info-card-label">คะแนนขั้นต่ำ</div><div class="info-card-value" id="fm_score">—</div></div>
+          <div class="info-card"><div class="info-card-label">ค่าเทอม / ปี</div><div class="info-card-value" id="fm_tuition">—</div></div>
+          <div class="info-card"><div class="info-card-label">กลุ่มสาขา</div><div class="info-card-value" id="fm_cat" style="font-size:14px;font-family:var(--sans)">—</div></div>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">จำนวนรับแต่ละรอบ</div>
+        <div class="round-detail-grid" id="fm_rounds"></div>
+        <div style="font-size:12px;font-weight:700;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin:16px 0 8px">เกณฑ์การคัดเลือก</div>
+        <div class="criteria-box" id="fm_criteria"></div>
+      </div>
+      <div class="tab-panel" id="tp_sc">
+        <table class="sh-table">
+          <thead><tr><th>ปี</th><th>รอบ</th><th>คะแนนขั้นต่ำ</th><th>ที่นั่ง</th></tr></thead>
+          <tbody id="fm_hist"></tbody>
+        </table>
+      </div>
+      <div class="tab-panel" id="tp_au">
+        <div class="cmp-summary" id="fm_cmp_sum"></div>
+        <div class="cmp-sort-row">
+          <span style="font-size:13px;color:var(--mu)">เรียงตาม</span>
+          <button class="sort-tag active" data-cs="score">คะแนน</button>
+          <button class="sort-tag" data-cs="seats">ที่นั่ง</button>
+          <button class="sort-tag" data-cs="tuition">ค่าเทอม</button>
+        </div>
+        <div class="cmp-wrap">
+          <table class="cmp-tbl">
+            <thead>
+              <tr>
+                <th style="min-width:180px">มหาวิทยาลัย</th>
+                <th>ประเภท</th>
+                <th>คะแนนขั้นต่ำ</th>
+                <th>ที่นั่งรวม</th>
+                <th>ค่าเทอม</th>
+              </tr>
+            </thead>
+            <tbody id="fm_cmp_body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════
+// DATA
+// ════════════════════════════════════════════
+const CAT={วิศวกรรม:['วิศวกรรม','เทคโนโลยี','คอมพิวเตอร์','สารสนเทศ'],แพทย์:['แพทย','เภสัช','พยาบาล','ทันตแพทย','สาธารณสุข','เทคนิคการแพทย'],วิทยาศาสตร์:['วิทยาศาสตร์','เกษตร','วนศาสตร์','ประมง','ชีววิทยา'],บริหาร:['บริหาร','เศรษฐศาสตร์','การบัญชี','พาณิชย'],ครุศาสตร์:['ครุศาสตร์','ศึกษาศาสตร์'],ศิลปะ:['ศิลป','สถาปัตย','นิเทศ','ดนตรี','ออกแบบ'],สังคม:['นิติ','รัฐศาสตร์','อักษร','มนุษย','สังคม','รัฐประศาสน']};
+function gcat(n){for(const[c,ks]of Object.entries(CAT))if(ks.some(k=>n.includes(k)))return c;return'อื่นๆ';}
+function fseats(f){return[f.r1,f.r2,f.r3,f.r4,f.r5].reduce((a,v)=>a+(v||0),0);}
+function useats(u){return(u.faculties||[]).reduce((a,f)=>a+fseats(f),0);}
+
+const MOCK=[
+  {id:'cu',name_th:'จุฬาลงกรณ์มหาวิทยาลัย',name_en:'Chulalongkorn University',uni_type:'รัฐบาล',location:'กรุงเทพมหานคร',region:'กลาง',emoji:'🏛️',faculties:[
+    {id:'cu_eng',name_th:'วิศวกรรมศาสตร์',r1:0,r2:240,r3:450,r4:130,r5:0,min_score:68.5,tuition:20000,criteria:'TGAT 30% + A-Level คณิต 40% + A-Level ฟิสิกส์ 30%',history:[{year:2567,round:3,score:68.2,seats:450},{year:2566,round:3,score:67.8,seats:440}]},
+    {id:'cu_sci',name_th:'วิทยาศาสตร์',r1:0,r2:160,r3:220,r4:100,r5:0,min_score:62.3,tuition:18000,criteria:'TGAT 20% + A-Level คณิต 35% + A-Level วิทย์ 45%',history:[]},
+    {id:'cu_med',name_th:'แพทยศาสตร์',r1:0,r2:120,r3:80,r4:50,r5:0,min_score:85.1,tuition:null,criteria:'TGAT 20% + TPAT1 30% + A-Level คณิต 25% + A-Level เคมี 25%',history:[{year:2567,round:3,score:85.0,seats:80}]},
+    {id:'cu_bus',name_th:'บริหารธุรกิจ (CBS)',r1:40,r2:120,r3:140,r4:60,r5:0,min_score:63.8,tuition:25000,criteria:'TGAT 40% + A-Level คณิต 30% + A-Level อังกฤษ 30%',history:[]},
+    {id:'cu_edu',name_th:'ครุศาสตร์',r1:0,r2:100,r3:120,r4:75,r5:0,min_score:55.0,tuition:null,criteria:'TGAT 40% + TPAT5 30% + GPA 30%',history:[]},
+    {id:'cu_law',name_th:'นิติศาสตร์',r1:0,r2:60,r3:80,r4:35,r5:0,min_score:61.2,tuition:18000,criteria:'TGAT 50% + A-Level สังคม 30% + A-Level ไทย 20%',history:[]},
+    {id:'cu_art',name_th:'อักษรศาสตร์',r1:20,r2:100,r3:160,r4:60,r5:0,min_score:58.5,tuition:18000,criteria:'TGAT 30% + A-Level ไทย 35% + A-Level อังกฤษ 35%',history:[]},
+    {id:'cu_pha',name_th:'เภสัชศาสตร์',r1:0,r2:80,r3:60,r4:40,r5:0,min_score:76.8,tuition:20000,criteria:'TGAT 20% + A-Level คณิต 30% + A-Level เคมี 30% + A-Level ชีว 20%',history:[]},
+    {id:'cu_arch',name_th:'สถาปัตยกรรมศาสตร์',r1:0,r2:50,r3:60,r4:40,r5:0,min_score:72.0,tuition:22000,criteria:'TGAT 20% + TPAT4 50% + A-Level คณิต 30%',history:[]},
+  ]},
+  {id:'tu',name_th:'มหาวิทยาลัยธรรมศาสตร์',name_en:'Thammasat University',uni_type:'รัฐบาล',location:'กรุงเทพมหานคร',region:'กลาง',emoji:'🔴',faculties:[
+    {id:'tu_law',name_th:'นิติศาสตร์',r1:0,r2:180,r3:250,r4:110,r5:0,min_score:60.8,tuition:16000,criteria:'TGAT 50% + A-Level ไทย 30% + A-Level สังคม 20%',history:[{year:2567,round:3,score:60.5,seats:250}]},
+    {id:'tu_eng',name_th:'วิศวกรรมศาสตร์',r1:0,r2:220,r3:310,r4:155,r5:0,min_score:68.1,tuition:18000,criteria:'TGAT 30% + A-Level คณิต 40% + A-Level ฟิสิกส์ 30%',history:[]},
+    {id:'tu_bus',name_th:'บริหารธุรกิจ (BBS)',r1:60,r2:180,r3:200,r4:70,r5:0,min_score:63.0,tuition:22000,criteria:'TGAT 40% + A-Level คณิต 30% + A-Level อังกฤษ 30%',history:[]},
+    {id:'tu_med',name_th:'แพทยศาสตร์',r1:0,r2:50,r3:50,r4:20,r5:0,min_score:84.5,tuition:null,criteria:'TGAT 20% + TPAT1 30% + A-Level คณิต 25% + A-Level วิทย์ 25%',history:[]},
+    {id:'tu_eco',name_th:'เศรษฐศาสตร์',r1:0,r2:120,r3:150,r4:80,r5:0,min_score:62.5,tuition:18000,criteria:'TGAT 35% + A-Level คณิต 40% + A-Level อังกฤษ 25%',history:[]},
+    {id:'tu_pol',name_th:'รัฐศาสตร์',r1:0,r2:140,r3:180,r4:80,r5:0,min_score:58.0,tuition:16000,criteria:'TGAT 50% + A-Level สังคม 30% + A-Level อังกฤษ 20%',history:[]},
+    {id:'tu_sci',name_th:'วิทยาศาสตร์และเทคโนโลยี',r1:0,r2:140,r3:170,r4:80,r5:0,min_score:58.0,tuition:16000,criteria:'TGAT 20% + A-Level คณิต 40% + A-Level วิทย์ 40%',history:[]},
+  ]},
+  {id:'mu',name_th:'มหาวิทยาลัยมหิดล',name_en:'Mahidol University',uni_type:'รัฐบาล',location:'นครปฐม',region:'กลาง',emoji:'💙',faculties:[
+    {id:'mu_siri',name_th:'แพทยศาสตร์ศิริราช',r1:0,r2:120,r3:160,r4:80,r5:0,min_score:88.0,tuition:null,criteria:'TGAT 15% + TPAT1 35% + A-Level คณิต 25% + A-Level วิทย์ 25%',history:[{year:2567,round:3,score:87.8,seats:160}]},
+    {id:'mu_rama',name_th:'แพทยศาสตร์รามาธิบดี',r1:0,r2:80,r3:80,r4:34,r5:0,min_score:87.5,tuition:null,criteria:'TGAT 15% + TPAT1 35% + A-Level คณิต 25% + A-Level วิทย์ 25%',history:[]},
+    {id:'mu_den',name_th:'ทันตแพทยศาสตร์',r1:0,r2:40,r3:50,r4:20,r5:0,min_score:82.0,tuition:20000,criteria:'TGAT 20% + TPAT1 30% + A-Level เคมี 30% + A-Level ชีว 20%',history:[]},
+    {id:'mu_pha',name_th:'เภสัชศาสตร์',r1:0,r2:100,r3:120,r4:60,r5:0,min_score:74.2,tuition:18000,criteria:'A-Level คณิต 35% + A-Level เคมี 35% + A-Level ชีว 30%',history:[]},
+    {id:'mu_eng',name_th:'วิศวกรรมศาสตร์และเทคโนโลยี',r1:0,r2:100,r3:150,r4:60,r5:0,min_score:62.0,tuition:20000,criteria:'TGAT 25% + A-Level คณิต 45% + A-Level ฟิสิกส์ 30%',history:[]},
+    {id:'mu_sci',name_th:'วิทยาศาสตร์',r1:0,r2:150,r3:180,r4:90,r5:0,min_score:60.1,tuition:16000,criteria:'TGAT 20% + A-Level คณิต 40% + A-Level วิทย์ 40%',history:[]},
+  ]},
+  {id:'ku',name_th:'มหาวิทยาลัยเกษตรศาสตร์',name_en:'Kasetsart University',uni_type:'รัฐบาล',location:'กรุงเทพมหานคร',region:'กลาง',emoji:'🌾',faculties:[
+    {id:'ku_eng',name_th:'วิศวกรรมศาสตร์',r1:0,r2:220,r3:380,r4:150,r5:0,min_score:62.4,tuition:18000,criteria:'TGAT 30% + A-Level คณิต 40% + A-Level ฟิสิกส์ 30%',history:[]},
+    {id:'ku_agri',name_th:'เกษตร',r1:80,r2:200,r3:250,r4:90,r5:0,min_score:50.0,tuition:14000,criteria:'TGAT 30% + A-Level คณิต 30% + A-Level ชีว 40%',history:[]},
+    {id:'ku_sci',name_th:'วิทยาศาสตร์',r1:0,r2:180,r3:260,r4:140,r5:0,min_score:55.0,tuition:14000,criteria:'TGAT 20% + A-Level คณิต 40% + A-Level วิทย์ 40%',history:[]},
+    {id:'ku_bus',name_th:'บริหารธุรกิจ',r1:50,r2:150,r3:170,r4:60,r5:0,min_score:57.5,tuition:16000,criteria:'TGAT 40% + A-Level คณิต 30% + A-Level อังกฤษ 30%',history:[]},
+    {id:'ku_for',name_th:'วนศาสตร์',r1:40,r2:80,r3:40,r4:20,r5:0,min_score:48.5,tuition:12000,criteria:'TGAT 30% + A-Level คณิต 30% + A-Level ชีว 40%',history:[]},
+    {id:'ku_eco',name_th:'เศรษฐศาสตร์',r1:0,r2:100,r3:150,r4:60,r5:0,min_score:56.0,tuition:14000,criteria:'TGAT 35% + A-Level คณิต 40% + A-Level อังกฤษ 25%',history:[]},
+  ]},
+  {id:'kmutt',name_th:'ม.เทคโนโลยีพระจอมเกล้าธนบุรี',name_en:'KMUTT',uni_type:'รัฐบาล',location:'กรุงเทพมหานคร',region:'กลาง',emoji:'🔧',faculties:[
+    {id:'kmutt_eng',name_th:'วิศวกรรมศาสตร์',r1:0,r2:200,r3:380,r4:100,r5:0,min_score:60.5,tuition:20000,criteria:'TGAT 30% + A-Level คณิต 40% + A-Level ฟิสิกส์ 30%',history:[]},
+    {id:'kmutt_sci',name_th:'วิทยาศาสตร์',r1:0,r2:120,r3:200,r4:100,r5:0,min_score:55.0,tuition:18000,criteria:'TGAT 20% + A-Level คณิต 40% + A-Level วิทย์ 40%',history:[]},
+    {id:'kmutt_it',name_th:'เทคโนโลยีสารสนเทศ',r1:0,r2:80,r3:120,r4:60,r5:0,min_score:58.0,tuition:20000,criteria:'TGAT 30% + A-Level คณิต 50% + A-Level ฟิสิกส์ 20%',history:[]},
+    {id:'kmutt_arch',name_th:'สถาปัตยกรรมศาสตร์',r1:0,r2:50,r3:60,r4:30,r5:0,min_score:65.0,tuition:22000,criteria:'TGAT 20% + TPAT4 50% + A-Level คณิต 30%',history:[]},
+  ]},
+  {id:'cmu',name_th:'มหาวิทยาลัยเชียงใหม่',name_en:'Chiang Mai University',uni_type:'รัฐบาล',location:'เชียงใหม่',region:'เหนือ',emoji:'🌸',faculties:[
+    {id:'cmu_med',name_th:'แพทยศาสตร์',r1:0,r2:80,r3:100,r4:40,r5:0,min_score:83.5,tuition:null,criteria:'TGAT 20% + TPAT1 30% + A-Level คณิต 25% + A-Level วิทย์ 25%',history:[]},
+    {id:'cmu_eng',name_th:'วิศวกรรมศาสตร์',r1:0,r2:180,r3:270,r4:110,r5:0,min_score:60.0,tuition:16000,criteria:'TGAT 30% + A-Level คณิต 40% + A-Level ฟิสิกส์ 30%',history:[]},
+    {id:'cmu_sci',name_th:'วิทยาศาสตร์',r1:0,r2:160,r3:220,r4:100,r5:0,min_score:55.5,tuition:14000,criteria:'TGAT 20% + A-Level คณิต 40% + A-Level วิทย์ 40%',history:[]},
+    {id:'cmu_bus',name_th:'บริหารธุรกิจ',r1:50,r2:130,r3:160,r4:50,r5:0,min_score:56.0,tuition:16000,criteria:'TGAT 40% + A-Level คณิต 30% + A-Level อังกฤษ 30%',history:[]},
+    {id:'cmu_pha',name_th:'เภสัชศาสตร์',r1:0,r2:60,r3:60,r4:30,r5:0,min_score:68.0,tuition:16000,criteria:'A-Level คณิต 35% + A-Level เคมี 35% + A-Level ชีว 30%',history:[]},
+  ]},
+  {id:'kku',name_th:'มหาวิทยาลัยขอนแก่น',name_en:'Khon Kaen University',uni_type:'รัฐบาล',location:'ขอนแก่น',region:'อีสาน',emoji:'🌻',faculties:[
+    {id:'kku_med',name_th:'แพทยศาสตร์',r1:0,r2:80,r3:110,r4:50,r5:0,min_score:82.1,tuition:null,criteria:'TGAT 20% + TPAT1 30% + A-Level คณิต 25% + A-Level วิทย์ 25%',history:[]},
+    {id:'kku_den',name_th:'ทันตแพทยศาสตร์',r1:0,r2:30,r3:35,r4:15,r5:0,min_score:78.0,tuition:18000,criteria:'TGAT 20% + TPAT1 30% + A-Level เคมี 30% + A-Level ชีว 20%',history:[]},
+    {id:'kku_eng',name_th:'วิศวกรรมศาสตร์',r1:0,r2:190,r3:280,r4:120,r5:0,min_score:58.0,tuition:14000,criteria:'TGAT 30% + A-Level คณิต 40% + A-Level ฟิสิกส์ 30%',history:[]},
+    {id:'kku_bus',name_th:'บริหารธุรกิจและการบัญชี',r1:60,r2:150,r3:150,r4:50,r5:0,min_score:54.0,tuition:14000,criteria:'TGAT 40% + A-Level คณิต 30% + A-Level อังกฤษ 30%',history:[]},
+  ]},
+  {id:'psu',name_th:'มหาวิทยาลัยสงขลานครินทร์',name_en:'Prince of Songkla University',uni_type:'รัฐบาล',location:'สงขลา',region:'ใต้',emoji:'🏝️',faculties:[
+    {id:'psu_med',name_th:'แพทยศาสตร์',r1:0,r2:80,r3:80,r4:35,r5:0,min_score:82.5,tuition:null,criteria:'TGAT 20% + TPAT1 30% + A-Level คณิต 25% + A-Level วิทย์ 25%',history:[]},
+    {id:'psu_eng',name_th:'วิศวกรรมศาสตร์',r1:0,r2:180,r3:260,r4:80,r5:0,min_score:58.0,tuition:14000,criteria:'TGAT 30% + A-Level คณิต 40% + A-Level ฟิสิกส์ 30%',history:[]},
+    {id:'psu_pha',name_th:'เภสัชศาสตร์',r1:0,r2:60,r3:60,r4:30,r5:0,min_score:68.0,tuition:14000,criteria:'A-Level คณิต 35% + A-Level เคมี 35% + A-Level ชีว 30%',history:[]},
+    {id:'psu_bus',name_th:'บริหารธุรกิจ',r1:50,r2:120,r3:150,r4:50,r5:0,min_score:52.0,tuition:12000,criteria:'TGAT 40% + A-Level คณิต 30% + A-Level อังกฤษ 30%',history:[]},
+  ]},
+  {id:'rsu',name_th:'มหาวิทยาลัยรังสิต',name_en:'Rangsit University',uni_type:'เอกชน',location:'ปทุมธานี',region:'กลาง',emoji:'🌟',faculties:[
+    {id:'rsu_med',name_th:'แพทยศาสตร์',r1:30,r2:60,r3:0,r4:0,r5:40,min_score:72.0,tuition:120000,criteria:'TGAT 30% + TPAT1 30% + A-Level วิทย์ 40%',history:[]},
+    {id:'rsu_eng',name_th:'วิศวกรรมศาสตร์',r1:100,r2:150,r3:0,r4:0,r5:150,min_score:45.0,tuition:60000,criteria:'TGAT 40% + A-Level คณิต 60%',history:[]},
+    {id:'rsu_bus',name_th:'บริหารธุรกิจ',r1:150,r2:200,r3:0,r4:0,r5:200,min_score:40.0,tuition:55000,criteria:'TGAT 60% + A-Level อังกฤษ 40%',history:[]},
+  ]},
+  {id:'ssru',name_th:'ม.ราชภัฏสวนสุนันทา',name_en:'SSRU',uni_type:'ราชภัฏ',location:'กรุงเทพมหานคร',region:'กลาง',emoji:'🌺',faculties:[
+    {id:'ssru_edu',name_th:'ครุศาสตร์',r1:120,r2:150,r3:100,r4:0,r5:0,min_score:48.0,tuition:12000,criteria:'TGAT 40% + TPAT5 40% + GPA 20%',history:[]},
+    {id:'ssru_sci',name_th:'วิทยาศาสตร์และเทคโนโลยี',r1:80,r2:100,r3:80,r4:0,r5:0,min_score:42.0,tuition:12000,criteria:'TGAT 30% + A-Level คณิต 35% + A-Level วิทย์ 35%',history:[]},
+    {id:'ssru_bus',name_th:'บริหารธุรกิจ',r1:100,r2:120,r3:100,r4:0,r5:0,min_score:40.0,tuition:12000,criteria:'TGAT 50% + A-Level คณิต 50%',history:[]},
+  ]},
+];
+
+// ════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════
+const ST={q:'',cat:'',type:'',region:'',round:'',tuition:'',sort:'uni'};
+let collapsed={};
+let allData=[];
+let wish=JSON.parse(localStorage.getItem('tcas_wish')||'[]');
+let cmpList=[];
+
+function allF(){return allData.flatMap(u=>(u.faculties||[]).map(f=>({...f,_u:u})));}
+function findU(fid){return allData.find(u=>(u.faculties||[]).some(f=>f.id===fid));}
+
+// ════════════════════════════════════════════
+// LOAD
+// ════════════════════════════════════════════
+const SB_URL = SiteConfig.SB_URL;
+const SB_KEY = SiteConfig.SB_KEY;
+const USE_SB = Boolean(SB_URL && SB_KEY);
+
+async function loadData(){
+  const year = SiteConfig.tcasYear();
+  if(USE_SB){
+    try{
+      const rows = await SiteConfig.fetchAdmissions({ year, limit: 9999 });
+      boot(mergeRows(rows),'supabase');
+      return;
+    }catch(e){
+      console.warn('Supabase unavailable:', e.message);
+    }
+  }
+  try{
+    const localData = await SiteConfig.fetchLocalData();
+    showWarn('local');
+    boot(localData,'json');
+  }catch(e){
+    console.warn('Local JSON unavailable:', e.message);
+    showWarn('sample');
+    boot(MOCK,'sample');
+  }
+}
+
+
+function normalizeType(t){
+  if(!t) return '';
+  if(t.includes('ราชภัฏ')) return 'ราชภัฏ';
+  if(t.includes('ราชมงคล')) return 'ราชมงคล';
+  if(t.includes('เอกชน')||t==='Private') return 'เอกชน';
+  if(t.includes('รัฐบาล')||t==='Public'||t==='Government') return 'รัฐบาล';
+  return t;
+}
+function mergeRows(rows){
+  const um={};
+  for(const r of rows){
+    if(!um[r.uni_id]) um[r.uni_id]={id:r.uni_id,name_th:r.uni_name_th,name_en:r.uni_name_en||'',uni_type:normalizeType(r.uni_type),location:r.location||'',region:r.region||'',emoji:getEmoji(r.uni_name_th),faculties:[],_fm:{}};
+    const u=um[r.uni_id];
+    if(!u._fm[r.faculty_id]) u._fm[r.faculty_id]={id:r.faculty_id,name_th:r.faculty_name_th||'',tuition:r.tuition_per_year||null,criteria:r.criteria||'',min_score:null,r1:0,r2:0,r3:0,r4:0,r5:0,history:[]};
+    const f=u._fm[r.faculty_id];
+    if(r.round_num>=1&&r.round_num<=5)f[`r${r.round_num}`]=(f[`r${r.round_num}`]||0)+(r.seats||0);
+    if(r.min_score&&(!f.min_score||r.min_score<f.min_score))f.min_score=parseFloat(r.min_score);
+  }
+  return Object.values(um).map(u=>({...u,faculties:Object.values(u._fm),_fm:undefined})).filter(u=>u.faculties.length);
+}
+
+function getEmoji(n){
+  const m={'จุฬา':'🏛️','ธรรมศาสตร์':'🔴','มหิดล':'💙','เกษตร':'🌾','พระจอมเกล้าธนบุรี':'🔧','ลาดกระบัง':'⚡','พระนครเหนือ':'🏗️','ศรีนครินทรวิโรฒ':'🎓','ศิลปากร':'🎨','บูรพา':'🌊','เชียงใหม่':'🌸','นเรศวร':'⚔️','แม่ฟ้าหลวง':'🍃','แม่โจ้':'🌱','พะเยา':'🏔️','ขอนแก่น':'🌻','มหาสารคาม':'🐘','อุบลราชธานี':'🌿','นครพนม':'🦚','สงขลา':'🏝️','วลัยลักษณ์':'🌴','ทักษิณ':'🎏','ราชภัฏ':'📚','ราชมงคล':'🔩','รังสิต':'🌟','กรุงเทพ':'🏙️'};
+  for(const[k,v]of Object.entries(m))if(n.includes(k))return v;
+  return'🎓';
+}
+
+function boot(data,src){
+  allData=data;
+  const tf=data.reduce((a,u)=>a+(u.faculties||[]).length,0);
+  const ts=data.reduce((a,u)=>a+useats(u),0);
+  document.getElementById('statUni').textContent=data.length;
+  document.getElementById('statFac').textContent=tf.toLocaleString();
+  document.getElementById('statSeats').textContent=ts.toLocaleString();
+  const b=document.getElementById('dataBadge');
+  if(b){
+    const isReal = src === 'supabase' || src === 'json';
+    b.textContent = src==='supabase' ? '🟢 ข้อมูลจริง' : src==='json' ? '🟢 ข้อมูลสำรอง' : '🟡 ข้อมูลตัวอย่าง';
+    b.style.background = isReal ? 'var(--green-bg)' : 'var(--gold-bg)';
+    b.style.color = isReal ? 'var(--green)' : 'var(--gold)';
+  }
+  render();
+}
+
+function showWarn(mode='local'){
+  const el=document.getElementById('apiWarn');
+  if(!el)return;
+  el.classList.add('show');
+  el.textContent = mode==='sample'
+    ? 'กำลังใช้ข้อมูลตัวอย่างชั่วคราว เพราะดึงข้อมูลจริงไม่ได้'
+    : 'กำลังใช้ไฟล์ข้อมูลสำรอง เพราะเชื่อมต่อฐานข้อมูลไม่ได้';
+}
+
+// ════════════════════════════════════════════
+// RENDER
+// ════════════════════════════════════════════
+function render(){
+  const q=ST.q.toLowerCase();
+  const ar=ST.round?+ST.round:null;
+  const avg=getAvg();
+
+  let sections=allData
+    .filter(u=>(!ST.type||u.uni_type===ST.type)&&(!ST.region||(u.region||'')===ST.region))
+    .map(u=>{
+      const facs=(u.faculties||[]).filter(f=>{
+        const cat=gcat(f.name_th);
+        if(ST.cat&&cat!==ST.cat)return false;
+        if(q&&!f.name_th.includes(q)&&!u.name_th.includes(q))return false;
+        if(ar&&!(f[`r${ar}`]>0))return false;
+        if(ST.tuition==='free'&&f.tuition!==0&&f.tuition!==null)return false;
+        if(ST.tuition==='20k'&&f.tuition&&f.tuition>20000)return false;
+        if(ST.tuition==='50k'&&f.tuition&&f.tuition>50000)return false;
+        return true;
+      });
+      return{...u,faculties:facs};
+    })
+    .filter(u=>u.faculties.length>0);
+
+  if(ST.sort==='seats')sections.sort((a,b)=>useats(b)-useats(a));
+  else if(ST.sort==='fac')sections.sort((a,b)=>b.faculties.length-a.faculties.length);
+  else sections.sort((a,b)=>a.name_th.localeCompare(b.name_th,'th'));
+
+  document.getElementById('resUni').textContent=sections.length;
+  document.getElementById('resFac').textContent=sections.reduce((a,u)=>a+u.faculties.length,0);
+  document.getElementById('emptyState').style.display=sections.length?'none':'block';
+
+  const el=document.getElementById('mainContent');
+  el.innerHTML=sections.map((u,i)=>renderSection(u,i,ar,avg)).join('');
+
+  el.querySelectorAll('.uni-header').forEach(h=>{
+    h.addEventListener('click',e=>{
+      if(e.target.closest('a'))return;
+      const s=h.closest('.uni-section');
+      const id=s.dataset.id;
+      collapsed[id]=!collapsed[id];
+      s.classList.toggle('collapsed',collapsed[id]);
+    });
+  });
+  el.querySelectorAll('.fac-card').forEach(c=>{
+    c.addEventListener('click',()=>openFac(c.dataset.fid));
+  });
+}
+
+function renderSection(u,i,ar,avg){
+  const seats=useats(u);
+  const cards=u.faculties.map(f=>{
+    const cat=gcat(f.name_th);
+    const tot=fseats(f);
+    const sc=f.min_score?f.min_score.toFixed(2):'—';
+    const tu=f.tuition===0?'ฟรี':f.tuition?`${(f.tuition/1000).toFixed(0)}K`:'—';
+    const rnds=[1,2,3,4,5].map(r=>{
+      const s=f[`r${r}`]||0;
+      const cls=s>0?(ar===r?'open hl':'open'):'none';
+      return`<div class="r-pill ${cls}"><div class="r-name">R${r}</div><div class="r-count">${s||'—'}</div></div>`;
+    }).join('');
+    // match
+    let mb='';
+    if(avg>0&&f.min_score){
+      const d=avg-f.min_score;
+      if(d>=0)mb=`<span class="match-badge m-pass">+${d.toFixed(1)}</span>`;
+      else if(d>=-5)mb=`<span class="match-badge m-close">${d.toFixed(1)}</span>`;
+      else mb=`<span class="match-badge m-miss">${d.toFixed(1)}</span>`;
+    }
+    // mini trend
+    let trend='';
+    if(f.history&&f.history.length>=2){
+      const sc2=f.history.slice(-3).map(h=>h.score);
+      const mn=Math.min(...sc2),mx=Math.max(...sc2),rng=mx-mn||1;
+      const bars=sc2.map((s,idx)=>{
+        const h2=Math.max(4,Math.round(((s-mn)/rng)*16)+4);
+        const dir=idx>0?(s>sc2[idx-1]?'mt-up':s<sc2[idx-1]?'mt-down':''):'';
+        return`<div class="mt-bar ${dir}" style="height:${h2}px"></div>`;
+      }).join('');
+      trend=`<div class="mini-trend">${bars}</div>`;
+    }
+    // buttons
+    const inW=wish.includes(f.id);
+    const inC=cmpList.some(c=>c.fid===f.id);
+    const wBtn=`<button class="fac-btn${inW?' active-wish':''}" data-wid="${f.id}" data-wn="${f.name_th}" data-wu="${u.name_th}" onclick="event.stopPropagation();toggleWish(this)" title="${inW?'เอาออก':'บันทึก'}">${inW?'❤️':'🤍'}</button>`;
+    const cBtn=`<button class="fac-btn${inC?' active-cmp':''}" data-cid="${f.id}" data-cn="${f.name_th}" data-cu="${u.name_th}" onclick="event.stopPropagation();toggleCmp(this)" title="เพิ่มเปรียบเทียบ">${inC?'✓ เปรียบ':'+ เปรียบ'}</button>`;
+
+    return`<div class="fac-card" data-fid="${f.id}">
+      <div class="fac-top">
+        <div class="fac-cat-icon icon-${cat}">${{วิศวกรรม:'⚙️',แพทย์:'🩺',วิทยาศาสตร์:'🔬',บริหาร:'💼',ครุศาสตร์:'📚',ศิลปะ:'🎨',สังคม:'📖','อื่นๆ':'🎓'}[cat]||'🎓'}</div>
+        <div class="fac-name">${f.name_th}</div>
+        <div class="fac-actions">${cBtn}${wBtn}</div>
+      </div>
+      <div class="round-row">${rnds}</div>
+      <div class="fac-foot">
+        <div class="foot-item"><div class="foot-label">ที่นั่งรวม</div><div class="foot-val">${tot.toLocaleString()}</div></div>
+        <div class="foot-item"><div class="foot-label">คะแนนขั้นต่ำ</div><div class="foot-val">${sc}</div></div>
+        <div class="foot-item"><div class="foot-label">ค่าเทอม / ปี</div><div class="foot-val${f.tuition===0?' free':''}">${tu}</div></div>
+        ${mb}${trend}
+      </div>
+    </div>`;
+  }).join('');
+
+  return`<div class="uni-section${collapsed[u.id]?' collapsed':''}" data-id="${u.id}" style="animation-delay:${i*.04}s">
+    <div class="uni-header">
+      <div class="uni-logo">${u.emoji||'🎓'}</div>
+      <div class="uni-name-wrap">
+        <a class="uni-name-link" href="/university?id=${u.id}" onclick="event.stopPropagation()">
+          <span class="uni-name">${u.name_th} ↗</span>
+        </a>
+        <div class="uni-sub">${u.name_en||''} · ${u.location||''} · ${u.region||''}</div>
+      </div>
+      <span class="uni-badge type-${u.uni_type}">${u.uni_type}</span>
+      <div class="uni-stats">
+        <div class="us-item"><div class="us-num">${u.faculties.length}</div><div class="us-label">คณะ</div></div>
+        <div class="us-item"><div class="us-num">${seats.toLocaleString()}</div><div class="us-label">ที่นั่ง</div></div>
+      </div>
+      <span class="toggle-chevron">▾</span>
+    </div>
+    <div class="fac-grid">${cards}</div>
+  </div>`;
+}
+
+function toggleAll(open){allData.forEach(u=>collapsed[u.id]=!open);render();}
+
+// ════════════════════════════════════════════
+// WISHLIST
+// ════════════════════════════════════════════
+function toggleWish(btn){
+  const id=btn.dataset.wid,name=btn.dataset.wn,uni=btn.dataset.wu;
+  const idx=wish.indexOf(id);
+  if(idx===-1){wish.push(id);btn.textContent='❤️';btn.classList.add('active-wish');}
+  else{wish.splice(idx,1);btn.textContent='🤍';btn.classList.remove('active-wish');}
+  localStorage.setItem('tcas_wish',JSON.stringify(wish));
+  renderWishPanel();
+}
+function renderWishPanel(){
+  const badge=document.getElementById('wishBadge');
+  const count=document.getElementById('wishCount');
+  if(badge){badge.textContent=wish.length||'';badge.style.display=wish.length?'flex':'none';}
+  if(count)count.textContent=wish.length?`(${wish.length})`:'';
+  const list=document.getElementById('wishList');
+  if(!list)return;
+  if(!wish.length){list.innerHTML='<div class="wp-empty">กด ❤️ ที่ card คณะไหนก็ได้<br>เพื่อบันทึกไว้ดูทีหลัง</div>';return;}
+  list.innerHTML=wish.map(id=>{
+    const f=allF().find(f=>f.id===id);
+    if(!f)return'';
+    return`<div class="wp-item" onclick="closeWish();openFac('${id}')">
+      <div><div class="wp-item-name">${f.name_th}</div><div class="wp-item-uni">${f._u?.name_th||''}</div></div>
+      <button class="wp-del" onclick="event.stopPropagation();removeWish('${id}')">✕</button>
+    </div>`;
+  }).join('');
+}
+function removeWish(id){wish=wish.filter(w=>w!==id);localStorage.setItem('tcas_wish',JSON.stringify(wish));renderWishPanel();render();}
+function clearWish(){wish=[];localStorage.setItem('tcas_wish','[]');renderWishPanel();render();}
+function toggleWishPanel(){document.getElementById('wishPanel').classList.toggle('open');}
+function closeWish(){document.getElementById('wishPanel').classList.remove('open');}
+
+// ════════════════════════════════════════════
+// COMPARE
+// ════════════════════════════════════════════
+function toggleCmp(btn){
+  const id=btn.dataset.cid,name=btn.dataset.cn,uni=btn.dataset.cu;
+  const idx=cmpList.findIndex(c=>c.fid===id);
+  if(idx===-1){
+    if(cmpList.length>=4)return;
+    cmpList.push({fid:id,fname:name,uname:uni});
+    btn.textContent='✓ เปรียบ';btn.classList.add('active-cmp');
+  }else{
+    cmpList.splice(idx,1);
+    btn.textContent='+ เปรียบ';btn.classList.remove('active-cmp');
+  }
+  renderCmpBar();
+}
+function renderCmpBar(){
+  const bar=document.getElementById('cmpBar');
+  const slots=document.getElementById('cmpSlots');
+  bar.classList.toggle('open',cmpList.length>0);
+  slots.innerHTML=cmpList.map(c=>`
+    <div class="cmp-tag">
+      <span class="cmp-tag-name">${c.fname}</span>
+      <button class="cmp-tag-del" onclick="removeCmp('${c.fid}')">✕</button>
+    </div>`).join('');
+}
+function removeCmp(id){cmpList=cmpList.filter(c=>c.fid!==id);renderCmpBar();render();}
+function clearCmp(){cmpList=[];renderCmpBar();render();}
+function goCmp(){
+  if(cmpList.length<2)return;
+  window.location.href=`/compare?ids=${cmpList.map(c=>c.fid).join(',')}`;
+}
+
+// ════════════════════════════════════════════
+// CALCULATOR
+// ════════════════════════════════════════════
+function getAvg(){
+  const ids=['s_tgat1','s_tgat2','s_tgat3','s_tpat','s_math','s_sci','s_thai','s_eng'];
+  const vals=ids.map(id=>parseFloat(document.getElementById(id)?.value)||0).filter(v=>v>0);
+  return vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:0;
+}
+function liveCalc(){
+  const avg=getAvg();
+  const el=document.getElementById('calcAvg');
+  if(el)el.textContent=avg>0?`คะแนนเฉลี่ย ${avg.toFixed(2)}`:'';
+  const res=document.getElementById('calcResults');
+  if(!res)return;
+  if(!avg){res.innerHTML='<div class="calc-empty">กรอกคะแนนด้านบนแล้วผลจะออกมาที่นี่เลย</div>';return;}
+  const pass=allF().filter(f=>f.min_score&&avg>=f.min_score).sort((a,b)=>(b.min_score-a.min_score));
+  const close=allF().filter(f=>f.min_score&&avg<f.min_score&&avg>=(f.min_score-5)).sort((a,b)=>(a.min_score-b.min_score));
+  let html='';
+  if(pass.length){
+    html+=`<div style="font-size:11px;font-weight:700;color:var(--green);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">ผ่านเกณฑ์ (${pass.length} คณะ)</div>`;
+    html+=pass.slice(0,12).map(f=>{
+      const u=findU(f.id);
+      return`<div class="calc-result-item cri-pass" data-fid="${f.id}">
+        <div style="flex:1"><div class="cri-name">${f.name_th}</div><div class="cri-uni">${u?.name_th||''}</div></div>
+        <div><div class="cri-score">${f.min_score.toFixed(2)}</div><div class="cri-diff">+${(avg-f.min_score).toFixed(2)}</div></div>
+      </div>`;
+    }).join('');
+  }
+  if(close.length){
+    html+=`<div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin:14px 0 8px">ขาดเกณฑ์ไม่มาก (${close.length} คณะ)</div>`;
+    html+=close.slice(0,6).map(f=>{
+      const u=findU(f.id);
+      return`<div class="calc-result-item cri-close" data-fid="${f.id}">
+        <div style="flex:1"><div class="cri-name">${f.name_th}</div><div class="cri-uni">${u?.name_th||''}</div></div>
+        <div><div class="cri-score">${f.min_score.toFixed(2)}</div><div class="cri-diff">${(avg-f.min_score).toFixed(2)}</div></div>
+      </div>`;
+    }).join('');
+  }
+  if(!pass.length&&!close.length)html='<div class="calc-empty">ยังไม่มีคณะที่ผ่านเกณฑ์ ลองกรอกคะแนนให้ครบกว่านี้ดูครับ</div>';
+  res.innerHTML=html;
+  res.querySelectorAll('.calc-result-item').forEach(el=>{
+    el.addEventListener('click',()=>{closeModal('calcModal');openFac(el.dataset.fid);});
+  });
+  render();
+}
+function clearCalc(){
+  ['s_tgat1','s_tgat2','s_tgat3','s_tpat','s_math','s_sci','s_thai','s_eng'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('calcAvg').textContent='';
+  document.getElementById('calcResults').innerHTML='<div class="calc-empty">กรอกคะแนนด้านบนแล้วผลจะออกมาที่นี่เลย</div>';
+  render();
+}
+
+// ════════════════════════════════════════════
+// FAC DETAIL
+// ════════════════════════════════════════════
+function openFac(fid){
+  const f=allF().find(f=>f.id===fid);
+  const u=findU(fid);
+  if(!f||!u)return;
+  document.getElementById('fm_title').textContent=f.name_th;
+  document.getElementById('fm_sub').textContent=`${u.name_th} · ${gcat(f.name_th)}`;
+  document.getElementById('fm_seats').textContent=fseats(f).toLocaleString()+' คน';
+  document.getElementById('fm_score').textContent=f.min_score?f.min_score.toFixed(2):'—';
+  document.getElementById('fm_tuition').textContent=f.tuition===0?'ฟรี':f.tuition?`${f.tuition.toLocaleString()} บาท`:'—';
+  document.getElementById('fm_cat').textContent=gcat(f.name_th);
+  document.getElementById('fm_criteria').textContent=f.criteria||'ไม่มีข้อมูล';
+  const RNAMES=['Portfolio','Quota','Admission','Direct','รับตรง'];
+  document.getElementById('fm_rounds').innerHTML=[1,2,3,4,5].map(r=>{
+    const s=f[`r${r}`]||0;
+    return`<div class="rd${s>0?' has':''}">
+      <div class="rd-label">รอบ ${r}</div>
+      <div class="rd-name">${RNAMES[r-1]}</div>
+      <div class="rd-count${s===0?' none':''}">${s>0?s.toLocaleString():'—'}</div>
+    </div>`;
+  }).join('');
+  // history
+  const hist=f.history||[];
+  document.getElementById('fm_hist').innerHTML=hist.length?hist.map(h=>{
+    const pct=Math.round((h.score/100)*100);
+    return`<tr><td>${h.year}</td><td>รอบ ${h.round}</td><td><div class="bar-row"><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div><span class="bar-val">${h.score.toFixed(2)}</span></div></td><td>${h.seats.toLocaleString()}</td></tr>`;
+  }).join(''):'<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--mu)">ยังไม่มีข้อมูลย้อนหลัง</td></tr>';
+  // all uni compare
+  const cat=gcat(f.name_th);
+  renderCmpTable(cat,f.id);
+  document.querySelectorAll('#facModal [data-cs]').forEach(b=>{
+    b.onclick=()=>{
+      document.querySelectorAll('#facModal [data-cs]').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      window._cmpSort=b.dataset.cs;
+      renderCmpTable(cat,f.id);
+    };
+  });
+  window._cmpSort='score';
+  // tabs reset
+  document.querySelectorAll('#facModal .tab-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+  document.querySelectorAll('#facModal .tab-panel').forEach((p,i)=>p.classList.toggle('active',i===0));
+  openModal('facModal');
+}
+
+function renderCmpTable(cat,curId){
+  const same=allF().filter(f=>gcat(f.name_th)===cat);
+  const sort=window._cmpSort||'score';
+  const sorted=[...same].sort((a,b)=>{
+    if(sort==='score')return(b.min_score||0)-(a.min_score||0);
+    if(sort==='seats')return fseats(b)-fseats(a);
+    return(b.tuition||0)-(a.tuition||0);
+  });
+  const scores=same.map(f=>f.min_score).filter(Boolean);
+  const mx=Math.max(...scores),mn=Math.min(...scores);
+  const maxS=Math.max(...same.map(f=>fseats(f)));
+  // summary
+  document.getElementById('fm_cmp_sum').innerHTML=`
+    <div class="cs-item"><div class="cs-n">${same.length}</div><div class="cs-l">มหาลัย</div></div>
+    <div class="cs-item"><div class="cs-n">${mx.toFixed(2)}</div><div class="cs-l">คะแนนสูงสุด</div></div>
+    <div class="cs-item"><div class="cs-n">${mn.toFixed(2)}</div><div class="cs-l">คะแนนต่ำสุด</div></div>
+    <div class="cs-item"><div class="cs-n">${same.reduce((a,f)=>a+fseats(f),0).toLocaleString()}</div><div class="cs-l">ที่นั่งรวม</div></div>
+  `;
+  document.getElementById('fm_cmp_body').innerHTML=sorted.map(f=>{
+    const u=findU(f.id);
+    const isCur=f.id===curId;
+    const sc=f.min_score?f.min_score.toFixed(2):'—';
+    const scClass=f.min_score?(f.min_score===mx?'cmp-best':f.min_score===mn?'cmp-worst':''):'';
+    const seats=fseats(f);
+    const pct=maxS?Math.round((seats/maxS)*100):0;
+    const tu=f.tuition===0?'ฟรี':f.tuition?`${(f.tuition/1000).toFixed(0)}K`:'—';
+    return`<tr class="${isCur?'cur':''}" style="cursor:pointer" onclick="closeModal('facModal');openFac('${f.id}')">
+      <td><div class="cmp-uni">
+        <div class="cmp-uni-logo">${u?.emoji||'🎓'}</div>
+        <div><div class="cmp-uni-name">${isCur?'★ ':''} ${f.name_th}</div><div class="cmp-uni-sub">${u?.name_th||''}</div></div>
+      </div></td>
+      <td><span class="uni-badge type-${u?.uni_type||''}" style="font-size:10px">${u?.uni_type||''}</span></td>
+      <td><span class="cmp-score ${scClass}">${sc}</span></td>
+      <td><div class="cmp-bar-row"><div class="cmp-bar-bg"><div class="cmp-bar-fill" style="width:${pct}%"></div></div><span style="font-family:var(--mono);font-size:12px">${seats.toLocaleString()}</span></div></td>
+      <td style="font-family:var(--mono);font-size:13px;color:var(--mu)">${tu}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════
+// MODAL HELPERS
+// ════════════════════════════════════════════
+function openModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';}
+function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
+function closeOnBg(e,id){if(e.target===e.currentTarget)closeModal(id);}
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const body=btn.closest('.m-body');
+    body.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    body.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    body.querySelector('#tp_'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ════════════════════════════════════════════
+// CONTROLS
+// ════════════════════════════════════════════
+let dbt;
+document.getElementById('searchInput').addEventListener('input',e=>{clearTimeout(dbt);dbt=setTimeout(()=>{ST.q=e.target.value.trim();render();},300);});
+function doSearch(){ST.q=document.getElementById('searchInput').value.trim();render();}
+document.getElementById('searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')doSearch();});
+
+document.querySelectorAll('.ftab[data-cat]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.ftab[data-cat]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');ST.cat=btn.dataset.cat;render();
+  });
+});
+['typeFilter','regionFilter','roundFilter','tuitionFilter','sortFilter'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.addEventListener('change',e=>{
+    ({typeFilter:'type',regionFilter:'region',roundFilter:'round',tuitionFilter:'tuition',sortFilter:'sort'}[id]);
+    const key={typeFilter:'type',regionFilter:'region',roundFilter:'round',tuitionFilter:'tuition',sortFilter:'sort'}[id];
+    ST[key]=e.target.value;render();
+  });
+});
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal('calcModal');closeModal('facModal');closeWish();}});
+
+// ════════════════════════════════════════════
+// DARK MODE + COUNTDOWN
+// ════════════════════════════════════════════
+
+
+
+(function(){
+  const now=new Date();
+  document.getElementById('heroDate').textContent=now.toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'});
+  const events=[
+    {date:new Date(2026,4,6), label:'เปิดรับสมัครรอบ 3 TCAS'+(window.tcasNum||69)},
+    {date:new Date(2026,4,20),label:'ประกาศผลรอบ 3 ครั้งที่ 1'},
+    {date:new Date(2026,4,28),label:'เปิดรับรอบ 4 Direct'},
+    {date:new Date(2026,5,6), label:'ประกาศผลรอบ 4 ครั้งที่ 1'},
+  ];
+  const next=events.find(e=>e.date>now);
+  if(next){
+    const days=Math.ceil((next.date-now)/864e5);
+    const pill=document.getElementById('cdPill');
+    if(pill&&days<=60){
+      pill.classList.add('show');
+      document.getElementById('cdNum').textContent=days;
+      document.getElementById('cdLabel').textContent=next.label;
+    }
+    if(days<=14){
+      const b=document.getElementById('eventBanner');
+      const body=document.getElementById('eventBannerBody');
+      b.classList.add('show');
+      body.innerHTML=`<strong>${next.label}</strong><br><span style="font-size:13px">อีก ${days} วัน — ${next.date.toLocaleDateString('th-TH',{day:'numeric',month:'long'})} · เตรียมตัวให้พร้อม</span>`;
+    }
+  }
+})();
+
+loadData();
+renderWishPanel();
+
+// 🥚 EASTER EGGS — Noppadon Pumpong
+
+// 1) Console
+(function(){
+  console.log('%c IloveTcas ','background:#1a56a0;color:#fff;font-size:13px;font-weight:800;padding:4px 12px;border-radius:4px;font-family:monospace');
+  console.log('%c Noppadon Pumpong','color:#4a9eff;font-size:12px;font-family:monospace');
+  console.log('%c 💡 ลอง Konami Code: ↑↑↓↓←→←→BA','color:#6e7681;font-size:11px;font-family:monospace');
+})();
+
+// 2) Konami Code → popup ชื่อ
+(function(){
+  const CODE=[38,38,40,40,37,39,37,39,66,65];
+  let idx=0;
+  document.addEventListener('keydown',e=>{
+    idx=e.keyCode===CODE[idx]?idx+1:e.keyCode===CODE[0]?1:0;
+    if(idx===CODE.length){idx=0;showKonami();}
+  });
+  function showKonami(){
+    const el=document.createElement('div');
+    el.innerHTML=`<div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:32px 40px;z-index:9999;font-family:'IBM Plex Mono',monospace;text-align:center;box-shadow:var(--shm);animation:konamiIn .3s cubic-bezier(.34,1.56,.64,1)">
+      <div style="font-size:28px;margin-bottom:12px">👋</div>
+      <div style="font-size:18px;font-weight:700;color:var(--tx)">Noppadon Pumpong</div>
+      <button onclick="this.closest('div').parentElement.remove()" style="margin-top:20px;padding:6px 18px;background:var(--ac);color:#fff;border:none;border-radius:7px;font-family:'IBM Plex Mono',monospace;font-size:12px;cursor:pointer">OK</button>
+    </div>`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),5000);
+  }
+})();
+
+// 3) คลิก logo 5 ครั้ง → toast ชื่อ
+(function(){
+  let n=0,t;
+  document.querySelector('.logo')?.addEventListener('click',e=>{
+    e.preventDefault();n++;clearTimeout(t);t=setTimeout(()=>n=0,1200);
+    if(n===5){n=0;const d=document.createElement('div');
+      d.style.cssText='position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--ac);color:#fff;padding:10px 22px;border-radius:100px;font-family:"IBM Plex Mono",monospace;font-size:13px;z-index:9999;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(26,86,160,.4);animation:toastIn .3s ease';
+      d.textContent='👋 Noppadon Pumpong';document.body.appendChild(d);setTimeout(()=>d.remove(),2500);}
+  });
+})();
+
+const _s=document.createElement('style');
+_s.textContent='@keyframes konamiIn{from{opacity:0;transform:translate(-50%,-50%) scale(.9)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
+document.head.appendChild(_s);
+
+</script>
+
+<!-- BACK TO TOP -->
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="กลับด้านบน">↑</button>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <span class="footer-logo">I♥TCAS</span>
+      · ข้อมูลจาก <a href="https://www.mytcas.com" target="_blank" class="footer-link">mytcas.com</a>
+    </div>
+    <div class="footer-credit">NopX_AI</div>
+  </div>
+</footer>
+
+<script>
+// Back to top visibility
+window.addEventListener('scroll',()=>{
+  const b=document.getElementById('btt');
+  if(b){b.style.opacity=window.scrollY>400?'1':'0';b.style.pointerEvents=window.scrollY>400?'auto':'none';}
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="dark">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I♥TCAS — หาคณะที่ใช่ เทียบข้อมูลให้ครบ</title>
+<meta name="description" content="ค้นหาคณะ จำนวนรับ คะแนนขั้นต่ำ ค่าเทอม ทุกมหาวิทยาลัย TCAS">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design.css">
+<!-- OG / Social sharing -->
+<meta property="og:type"        content="website">
+<meta property="og:site_name"   content="iLoveTCAS">
+<meta property="og:title"       content="I♥TCAS — หาคณะที่ใช่ เทียบข้อมูลให้ครบ">
+<meta property="og:description" content="ค้นหาคณะ จำนวนรับ คะแนนขั้นต่ำ ค่าเทอม ทุกมหาวิทยาลัยที่เข้าร่วม TCAS ในที่เดียว">
+<meta property="og:image"       content="https://ilovetcas.vercel.app/og-image.png">
+<meta property="og:image:width"  content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url"         content="https://ilovetcas.vercel.app/">
+<meta property="og:locale"      content="th_TH">
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="I♥TCAS — หาคณะที่ใช่ เทียบข้อมูลให้ครบ">
+<meta name="twitter:description" content="ค้นหาคณะ จำนวนรับ คะแนนขั้นต่ำ ค่าเทอม ทุกมหาวิทยาลัยที่เข้าร่วม TCAS ในที่เดียว">
+<meta name="twitter:image"       content="https://ilovetcas.vercel.app/og-image.png">
+<meta name="theme-color"         content="#4361ee">
+<style>
+/* ── LANDING-ONLY: full-screen centered layout ── */
+body{overflow:hidden;}
+.landing-wrap{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  min-height:calc(100vh - 56px - 66px);
+  text-align:center;padding:0 24px;
+}
+.landing-logo{
+  font-family:var(--logo-font);
+  font-size:clamp(56px,12vw,96px);font-weight:700;
+  background:linear-gradient(90deg,#f472b6,#a78bfa,#67e8f9,#a78bfa,#f472b6);
+  background-size:200%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 24px rgba(167,139,250,.7));
+  animation:rainbow 3s linear infinite;
+  line-height:1.05;margin-bottom:28px;
+}
+.landing-tagline{
+  font-size:clamp(22px,4vw,32px);font-weight:800;color:var(--tx);
+  margin-bottom:12px;letter-spacing:-.3px;line-height:1.3;
+}
+.landing-sub{
+  font-size:clamp(16px,2.4vw,19px);color:var(--mu);
+  font-weight:400;margin-bottom:40px;line-height:1.6;
+}
+.landing-pills{
+  display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:52px;
+}
+.l-pill{
+  padding:10px 20px;border-radius:100px;
+  font-size:15px;font-weight:700;
+  display:flex;align-items:center;gap:8px;transition:transform .2s;cursor:default;
+}
+.l-pill:hover{transform:translateY(-2px);}
+.lp1{background:var(--ac-bg);border:1px solid rgba(99,102,241,.4);color:#a5b4fc;}
+.lp2{background:var(--pu-bg);border:1px solid rgba(167,139,250,.4);color:#c4b5fd;}
+.lp3{background:var(--pk-bg);border:1px solid rgba(244,114,182,.4);color:#f9a8d4;}
+.landing-cta{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:16px 40px;
+  background:linear-gradient(135deg,rgba(109,131,255,.2),rgba(167,139,250,.2));
+  border:1.5px solid rgba(167,139,250,.5);border-radius:100px;
+  color:var(--tx);font-family:var(--sans);font-size:18px;font-weight:700;
+  text-decoration:none;cursor:pointer;transition:all .25s;
+  backdrop-filter:blur(8px);position:relative;overflow:hidden;
+  animation:fadeUp .7s ease .4s both;
+}
+.landing-cta::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(109,131,255,.15),rgba(167,139,250,.15));
+  opacity:0;transition:opacity .25s;}
+.landing-cta:hover::before{opacity:1;}
+.landing-cta:hover{
+  border-color:rgba(167,139,250,.8);transform:translateY(-2px);
+  box-shadow:0 8px 32px rgba(109,131,255,.3),0 0 0 1px rgba(167,139,250,.2);
+}
+.cta-arrow{font-size:18px;transition:transform .25s;}
+.landing-cta:hover .cta-arrow{transform:translateX(4px);}
+/* fade-in animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.landing-logo{animation:fadeUp .6s ease both,rainbow 3s linear infinite;}
+.landing-tagline{animation:fadeUp .7s ease .1s both;}
+.landing-sub{animation:fadeUp .7s ease .2s both;}
+.landing-pills{animation:fadeUp .7s ease .3s both;}
+@media(max-width:480px){
+  body{overflow:auto;}
+  .landing-wrap{padding:80px 20px 40px;}
+  .landing-pills{gap:8px;}
+  .l-pill{padding:8px 14px;font-size:13px;}
+}
+</style>
+<script src="site.js"></script>
+</head>
+<body>
+
+<!-- HEADER — เหมือนกันทุกหน้า -->
+<header>
+  <a href="/" class="logo">I♥TCAS</a>
+  <nav>
+    <a href="/search">ค้นหาคณะ</a>
+    <a href="/universities">มหาวิทยาลัย</a>
+    <a href="/compare">เปรียบเทียบ</a>
+    <a href="/timeline">ปฏิทิน</a>
+  </nav>
+</header>
+
+<!-- LANDING HERO -->
+<div class="landing-wrap">
+  <div class="landing-logo">I♥TCAS</div>
+  <div class="landing-tagline">หาคณะที่ใช่ เทียบข้อมูลให้ครบ<br>ก่อนตัดสินใจ</div>
+  <div class="landing-sub">จำนวนรับ · คะแนนขั้นต่ำ · ค่าเทอม · 81 มหาวิทยาลัย 847 คณะ</div>
+  <div class="landing-pills">
+    <div class="l-pill lp1">🏫 81 มหาวิทยาลัย</div>
+    <div class="l-pill lp2">🎓 847 คณะ</div>
+    <div class="l-pill lp3">📅 <span data-tcas-year>TCAS69</span></div>
+  </div>
+  <a href="/search" class="landing-cta">
+    เริ่มค้นหาคณะ
+    <span class="cta-arrow">→</span>
+  </a>
+</div>
+
+<!-- FOOTER — เหมือนกันทุกหน้า -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <span class="footer-logo">I♥TCAS</span>
+      · ข้อมูลจาก <a href="https://www.mytcas.com" target="_blank" class="footer-link">mytcas.com</a>
+    </div>
+    <div class="footer-credit">NopX_AI</div>
+  </div>
+</footer>
+
+<script>
+// 🥚 Easter egg — Noppadon Pumpong
+(function(){
+  console.log('%c I♥TCAS ','background:#1a56a0;color:#fff;font-size:13px;font-weight:800;padding:4px 12px;border-radius:4px;font-family:monospace');
+  console.log('%c Noppadon Pumpong','color:#4a9eff;font-size:12px;font-family:monospace');
+  console.log('%c ↑↑↓↓←→←→BA','color:#6e7681;font-size:11px;font-family:monospace');
+  const CODE=[38,38,40,40,37,39,37,39,66,65];let idx=0;
+  document.addEventListener('keydown',e=>{
+    idx=e.keyCode===CODE[idx]?idx+1:e.keyCode===CODE[0]?1:0;
+    if(idx===CODE.length){idx=0;
+      const el=document.createElement('div');
+      el.innerHTML=`<div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:32px 40px;z-index:9999;font-family:'IBM Plex Mono',monospace;text-align:center;box-shadow:var(--shm)"><div style="font-size:28px;margin-bottom:12px">👋</div><div style="font-size:20px;font-weight:700;background:linear-gradient(90deg,#f472b6,#a78bfa,#67e8f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Noppadon Pumpong</div><button onclick="this.closest('div').parentElement.remove()" style="margin-top:18px;padding:6px 18px;background:var(--ac);color:#fff;border:none;border-radius:7px;font-size:12px;cursor:pointer;font-family:monospace">OK</button></div>`;
+      document.body.appendChild(el);setTimeout(()=>el.remove(),5000);
+    }
+  });
+  let n=0,t;
+  document.querySelector('.landing-logo')?.addEventListener('click',()=>{
+    n++;clearTimeout(t);t=setTimeout(()=>n=0,1200);
+    if(n===5){n=0;const d=document.createElement('div');
+      d.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--ac);color:#fff;padding:10px 22px;border-radius:100px;font-family:"IBM Plex Mono",monospace;font-size:13px;z-index:9999;pointer-events:none;white-space:nowrap;';
+      d.textContent='👋 Noppadon Pumpong';document.body.appendChild(d);setTimeout(()=>d.remove(),2500);}
+  });
+})();
+</script>
+</body>
+</html>
